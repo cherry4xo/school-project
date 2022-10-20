@@ -1,0 +1,5 @@
+USER_NAME = 'root'
+USER_PASS = 'qwerty'
+DB_IP = 'localhost'
+DB_PORT = '3366'
+DB_NAME = 'project_db'
