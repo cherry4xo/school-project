@@ -5,23 +5,20 @@ class Track(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
     name = fields.CharField(max_length=255, not_null=True)
     actors_ids: fields.ManyToManyRelation["Executor"] = fields.ManyToManyField(
-        'models.Executor', related_name='Executor_id', through='track_executors'
-    )
-    album_id = fields.ForeignKeyField(
-        'models.Album', related_name='Album_id'
+        'models.Executor', related_name='Track_executor_id', through='Track_executors_id'
     )
     duration = fields.TimeField()
     likes_ids: fields.ManyToManyRelation['User'] = fields.ManyToManyField(
-        'models.User', related_name='User_playlists_ids', through='track_likes'
+        'models.User', related_name='User_playlists_ids', through='Track_likes_id'
     )
     comments_ids: fields.ManyToManyRelation['Track_comment'] = fields.ManyToManyField(
-        'models.Track_comment', related_name='Track_comment_id', through='track_comments'
+        'models.Track_comment', related_name='Track_comment_id', through='Track_comments_id'
     )
     preview_pic_id = fields.ForeignKeyField(
-        'models.Picture', related_name='Picture_id'
+        'models.Picture', related_name='Track_picture_id'
     )
     genres_ids: fields.ManyToManyRelation['Genre'] = fields.ManyToManyField(
-        'models.Genre', related_name='Genre_id', through='track_genres'
+        'models.Genre', related_name='Track_genre_id', through='Track_genres_id'
     )
     track_file_id = fields.ForeignKeyField(
         'models.Track_file', related_name='Track_file_id'
@@ -38,17 +35,11 @@ class Track(Model):
 class Executor(Model):
     id = fields.IntField(pk=True, uniqie=True, auto_increment=True, not_null=True)
     name = fields.CharField(max_length=255, not_null=True)
-    albums_ids: fields.ManyToManyRelation["Album"] = fields.ManyToManyField(
-        'models.Album', related_name="Album_id", through='Executor_albums'
-    )
-    tracks_ids: fields.ManyToManyRelation["Track"] = fields.ManyToManyField(
-        'models.Track', related_name="Track_id", through='Executor_tracks'
-    )
     followers_ids: fields.ManyToManyRelation["User"] = fields.ManyToManyField(
-        'models.User', related_name='User_id', through='Executor_followers'
+        'models.User', related_name='Executor_user_id', through='Executor_followers'
     )
     avatar_file_id = fields.ForeignKeyField(
-        'models.Picture', related_name='Picture_id'
+        'models.Picture', related_name='Executor_picture_id'
     )
     registration_date = fields.DatetimeField(auto_now_add=True)
 
@@ -63,16 +54,13 @@ class Album(Model):
     id = fields.IntField(pk=True, unique=True, auto_increment=True, not_null=True)
     name = fields.CharField(max_length=255, not_null=True)
     tracks_ids: fields.ManyToManyRelation["Track"] = fields.ManyToManyField(
-        'models.Track', related_name='Track_id', through='Album_tracks'
-    )
-    likes_ids: fields.fields.ManyToManyRelation["User"] = fields.ManyToManyField(
-        'models.User', related_name='User_id', through='Album_likes'
+        'models.Track', related_name='Album_track_id', through='Album_tracks'
     )
     executors_ids: fields.ManyToManyRelation["Executor"] = fields.ManyToManyField(
-        'models.Executor', related_name='Executor_id', through='Album_executors'
+        'models.Executor', related_name='Album_executor_id', through='Album_executors'
     )
     preview_file_id = fields.ForeignKeyField(
-        'models.Picture', related_name='Picture_id'
+        'models.Picture', related_name='Album_picture_id'
     )
     release_date = fields.DatetimeField(auto_now_add=True)
     
@@ -88,22 +76,22 @@ class User(Model):
     name = fields.CharField(max_length=255, not_null=True)
     registration_date = fields.DatetimeField(auto_now_add=True)
     liked_tracks_ids: fields.ManyToManyRelation["Track"] = fields.ManyToManyField(
-        'models.Track', related_name='Track_id', through='User_liked_tracks'
+        'models.Track', related_name='User_track_id', through='User_liked_tracks'
     )
     following_executors_ids: fields.ManyToManyRelation["Executor"] = fields.ManyToManyField(
-        'models.Executor', related_name='Executor_id', through='User_following_executors'
+        'models.Executor', related_name='User_executor_id', through='User_following_executors'
     )
     avatar_file_id = fields.ForeignKeyField(
-        'models.Picture', related_name='Picture_id'
+        'models.Picture', related_name='User_picture_id'
     )
     playlists_ids: fields.ManyToManyRelation["Playlist"] = fields.ManyToManyField(
         'models.Playlist', related_name='Playlist_id', through='User_playlists'
     )
     favorite_genres_ids: fields.ManyToManyRelation["Genre"] = fields.ManyToManyField(
-        'models.Genre', related_name='Genre_id', through='User_genres'
+        'models.Genre', related_name='User_genre_id', through='User_genres'
     )
     albums_ids: fields.ManyToManyRelation["Album"] = fields.ManyToManyField(
-        'models.Album', related_name='Album_id', through='User_albums'
+        'models.Album', related_name='User_album_id', through='User_albums'
     )
 
     class Meta:
@@ -117,11 +105,11 @@ class Playlist(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
     name = fields.CharField(max_length=255, not_null=True)
     tracks_ids: fields.ManyToManyRelation["Track"] = fields.ManyToManyField(
-        'models.Track', related_name='Track_id', through='Playlist_tracks'
+        'models.Track', related_name='Playlist_track_id', through='Playlist_tracks'
     )
     release_date = fields.DateField(auto_now_add=True)
-    users_likes_ids: fields.ManytoManyRelation["User"] = fields.ManyToManyField(
-        'models.User', related_name='User_id', through='Playlist_user_likes'
+    creator_id: fields.ForeignKeyField(
+        'models.User', related_name='Playlist_user_id'
     )
 
     class Meta:
@@ -133,8 +121,8 @@ class Playlist(Model):
 
 class Track_file(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
-    file_name = fields.charField(max_length=255, unique=True)
-    file_type = fields.charField(max_length=15)
+    file_name = fields.CharField(max_length=255, unique=True)
+    file_type = fields.CharField(max_length=15)
 
 
     class Meta:
@@ -147,7 +135,7 @@ class Track_file(Model):
 class Track_comment(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
     user_id = fields.ForeignKeyField(
-        'models.User', related_name='User_id'
+        'models.User', related_name='Track_comment_user_id'
     )
     text = fields.TextField()
 
@@ -171,8 +159,8 @@ class Genre(Model):
 
 class Picture(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
-    file_name = fields.charField(max_length=255, unique=True)
-    file_type = fields.charField(max_length=15)
+    file_name = fields.CharField(max_length=255, unique=True)
+    file_type = fields.CharField(max_length=15)
 
     class Meta:
         table = 'Picture'

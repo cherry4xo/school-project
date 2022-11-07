@@ -2,16 +2,18 @@ version: '3.1'
 
 services:
   db: 
+    container_name: "db"
     image: mysql:5.7
     restart: always
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'cherry4xo'
+      MYSQL_PASSWORD: 'qwerty'
       MYSQL_ROOT_PASSWORD: 'qwerty'
     ports:
       - '3366:3306'
-    expose:
-      - '3306'
+    volumes:
+      - /var/lib/mysql
 
   adminer:
     image: adminer
