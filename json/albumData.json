@@ -1,0 +1,119 @@
+{
+    "artistNames": [
+        "17 SEVENTEEN"
+    ],
+    "genre": "rusrap",
+    "releaseDate": "2022-05-20T00:00:00+03:00",
+    "title": "Песочный Человек",
+    "trackCount": 13,
+    "tracks": [
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "До пизды",
+            "trackDuration": 98820,
+            "trackPosition": 1
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Может просто",
+            "trackDuration": 126660,
+            "trackPosition": 2
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Запах сигарет",
+            "trackDuration": 114280,
+            "trackPosition": 3
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Котики",
+            "trackDuration": 109890,
+            "trackPosition": 4
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN",
+                "CUPSIZE"
+            ],
+            "name": "Бардак",
+            "trackDuration": 113260,
+            "trackPosition": 5
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Снег",
+            "trackDuration": 136720,
+            "trackPosition": 6
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Балконы",
+            "trackDuration": 118400,
+            "trackPosition": 7
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "3 литра",
+            "trackDuration": 117330,
+            "trackPosition": 8
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Скучно",
+            "trackDuration": 120000,
+            "trackPosition": 9
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN",
+                "Rizza"
+            ],
+            "name": "Внимания",
+            "trackDuration": 166500,
+            "trackPosition": 10
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "На полу",
+            "trackDuration": 115550,
+            "trackPosition": 11
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN",
+                "Sqwore"
+            ],
+            "name": "Мысли",
+            "trackDuration": 96000,
+            "trackPosition": 12
+        },
+        {
+            "artists": [
+                "17 SEVENTEEN"
+            ],
+            "name": "Давай просто помолчим",
+            "trackDuration": 147290,
+            "trackPosition": 13
+        }
+    ],
+    "year": 2022
+}
