@@ -1,12 +1,12 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import json
-from config import URL, PATTERN, DATATYPE, SCRIPTNUM, HTML_PARSER_FILEPATH, JSONPARSER_DATATYPE
+from config import URL, PATTERN, HTML_PARSER_DATATYPE, JSONPARSER_DATATYPE, SCRIPTNUM, HTML_PARSER_FILEPATH, JSONPARSER_DATATYPE
 
 
 class HtmlParser:
 
-    def __init__(self, url = URL, patternStr:str = PATTERN, dataType:str = DATATYPE):
+    def __init__(self, url = URL, patternStr:str = PATTERN, dataType:str = HTML_PARSER_DATATYPE):
         """ HtmlParser class constructor
 
         :url: website url for parse
@@ -128,6 +128,7 @@ class JsonParser:
                 "genre": genre,
                 "year": year,
             }
+
             return json.dumps(albumData, indent=4, sort_keys=True, ensure_ascii=False)
 
         elif self.dataType == "artist":
