@@ -6,7 +6,7 @@ services:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: 'db'
+      MYSQL_DATABASE: 'main_db'
       MYSQL_USER: 'cherry4xo'
       MYSQL_PASSWORD: 'qwerty'
       MYSQL_ROOT_PASSWORD: 'qwerty'
