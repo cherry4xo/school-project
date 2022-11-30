@@ -1,11 +1,12 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import json
+from config import URL, PATTERN, DATATYPE, SCRIPTNUM, HTML_PARSER_FILEPATH, JSONPARSER_DATATYPE
 
 
 class HtmlParser:
 
-    def __init__(self, url:str, patternStr:str = "", dataType:str = ""):
+    def __init__(self, url = URL, patternStr:str = PATTERN, dataType:str = DATATYPE):
         """ HtmlParser class constructor
 
         :url: website url for parse
@@ -27,7 +28,7 @@ class HtmlParser:
         with open(filePath, "w+", encoding='utf-8') as f:
             f.write(self.html)
 
-    def makeJsonFile(self, scriptNum:int, filePath:str):
+    def makeJsonFile(self, scriptNum:int = SCRIPTNUM, filePath:str = HTML_PARSER_FILEPATH):
         """ writing [scriptNum] script into <filePath+dataType>.json file based on pattern
 
         :scriptNum: any number of script in the page file (be careful for <IndexError>) TODO make an exeption for <IndexError>
@@ -47,7 +48,7 @@ class HtmlParser:
 
 class JsonParser:
 
-    def __init__(self, mainFilePath, dataType:str = "", subFilePath = {}):
+    def __init__(self, mainFilePath, dataType:str = JSONPARSER_DATATYPE, subFilePath = {}):
         """ JsonParser class constructor
         
         :mainFilePath: main (.*?).json file path for parsing
