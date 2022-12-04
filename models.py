@@ -23,7 +23,6 @@ class Track(Model):
     track_file_id = fields.ForeignKeyField(
         'models.Track_file', related_name='Track_file_id'
     )
-    release_date = fields.DatetimeField(auto_now_add=True)
 
     class Meta:
         table = 'Track'
@@ -75,6 +74,9 @@ class User(Model):
     id = fields.IntField(pk=True, auto_increment=True, not_null=True, unique=True)
     name = fields.CharField(max_length=255, not_null=True)
     registration_date = fields.DatetimeField(auto_now_add=True)
+    email = fields.CharField(max_length=255, not_null=True)
+    password = fields.CharField(max_length=255, not_null=True)
+    login = fields.CharField(max_length=255, not_null=True)
     liked_tracks_ids: fields.ManyToManyRelation["Track"] = fields.ManyToManyField(
         'models.Track', related_name='User_track_id', through='User_liked_tracks'
     )
@@ -149,6 +151,7 @@ class Track_comment(Model):
 class Genre(Model):
     id = fields.IntField(pk=True, unique=True, not_null=True, auto_increment=True)
     name = fields.CharField(max_length=255, not_null=True)
+    alt_name = fields.CharField(max_length=255)
 
     class Meta:
         table = 'Genre'
