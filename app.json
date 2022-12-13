@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "tutorial",
+    "slug": "tutorial",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/music_icon.svg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/music_icon.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/music_icon.svg",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/music_icon.svg"
+    }
+  }
+}
