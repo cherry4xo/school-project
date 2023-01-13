@@ -1,11 +1,30 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Button, Text, View } from 'react-native';
+// import { Audio } from 'expo-av';
 
 export default function LibrarySongs({ navigation }) {
+
+    // const sound = new Audio.Sound();
+
+    // async function playSound() {
+    //     try {
+    //         await sound.loadAsync(require('../../assets/audio/Rammstein_-_Adieu.mp3'), { shouldPlay: true });
+    //         await sound.replayAsync();
+    //         console.log('playing...')
+    //         await sound.unloadAsync();
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    // async function stopSound() {
+
+    // }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Victory</Text>
-        </View >
+            <Text style={styles.text}>Songs</Text>
+        </View>
     )
 }
 
@@ -23,19 +42,5 @@ const styles = StyleSheet.create({
         color: 'white',
         fontFamily: 'Nunito-Bold',
         fontSize: '20pt'
-    },
-    itemsPair: {
-        display: 'flex',
-        flexDirection: 'row',
-    },
-    menuItem: {
-        width: 150,
-        height: 150,
-        borderRadius: 25,
-
-        alignItems: 'center',
-        justifyContent: 'center',
-
-        margin: 8,
     }
 })

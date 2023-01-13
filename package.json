@@ -19,15 +19,20 @@
     "expo-font": "~11.0.1",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
+    "native-base": "^2.15.2",
     "react": "18.1.0",
     "react-devtools": "^4.26.1",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-audio-4expo": "^0.0.7",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "~3.18.0",
+    "react-native-sound": "^0.11.2",
     "react-native-svg": "13.4.0",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-web": "~0.18.9"
+    "react-native-track-player": "^3.2.0-8b0cb1089409eff451fa252f2ba68b3c09f638eb",
+    "react-native-web": "~0.18.9",
+    "react-timer-mixin": "^0.13.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

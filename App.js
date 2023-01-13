@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
@@ -20,6 +20,7 @@ import RecPage from './src/Roots/RecPage'
 import SearchPage from './src/Roots/SearchPage'
 import SoundSearchPage from './src/Roots/SoundSearchPage'
 import HomeSVG from './src/svgIcons/HomeSVG';
+import { setAudioModeAsync } from 'expo-av/build/Audio';
 
 export default function App() {
 
