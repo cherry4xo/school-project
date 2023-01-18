@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import Player from './Player/AudioSlider'
 import Track from '../assets/audio/Rammstein_-_Adieu.mp3'
+import trackIcon from '../assets/img/avatar.jpg'
 
 import HomeSVG from "./svgIcons/HomeSVG";
 import LibrarySVG from "./svgIcons/LibrarySVG";
@@ -75,7 +76,7 @@ export default function NavBar() {
 
     return (
         <View style={styles.Content}>
-            <Player style={styles.Player} audio={Track} />
+            <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Adieu'} audio={Track} />
             <View style={styles.NavBar}>
                 <TouchableHighlight
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
@@ -115,23 +116,15 @@ export default function NavBar() {
 const styles = StyleSheet.create({
     Content: {
         width: '100%',
-        borderTopColor: 'rgb(96,96,96)',
-        borderTopWidth: '1px',
-        position: 'relative'
     },
     NavBar: {
         width: '100%',
-        backgroundColor: 'black',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: "space-around",
         paddingTop: 5,
+        borderTopColor: 'rgb(96,96,96)',
+        borderTopWidth: '1px',
     },
-    Player: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-    }
 })
