@@ -29,7 +29,7 @@ export default function HomePage({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <ImageBackground blurRadius={5} source={bgImage} style={styles.image} >
+            <ImageBackground blurRadius={15} source={bgImage} style={styles.image} >
                 <View style={styles.greeting}>
                     <Image source={avatar} style={styles.userAvatar} />
                     <View style={styles.greetingTextBlock}>

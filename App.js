@@ -32,103 +32,106 @@ export default function App() {
   if (!fontsLoaded) return <AppLoading />
 
   return (
-    <SafeAreaView style={styles.container}>
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName='Home'
-          tabBar={() => <NavBar />}
+    <View>
+      <SafeAreaView style={styles.container}>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName='Home'
+            tabBar={() => <NavBar />}
 
-          screenOptions={{
+            screenOptions={{
 
-          }}
+            }}
 
-        >
-          <Tab.Screen
-            name="HomePage"
-            component={HomePage}
-            options={{
-              title: 'Home',
-              headerStyle: {
-                backgroundColor: 'black',
-                elevation: 0,
-                shadowOffset: {
-                  width: 0,
-                  height: 0
-                }
-              },
-              headerTintColor: 'white',
-              headerTitleStyle: {
-                fontFamily: 'Nunito-Bold',
-              },
-            }}
-          />
-          <Tab.Screen
-            name="LibraryPage"
-            component={LibraryPage}
-            options={{
-              headerShown: false
-            }}
-          />
-          <Tab.Screen
-            name="RecPage"
-            component={RecPage}
-            options={{
-              title: 'Recomendations',
-              headerStyle: {
-                backgroundColor: 'black',
-                elevation: 0,
-                shadowOffset: {
-                  width: 0,
-                  height: 0
-                }
-              },
-              headerTintColor: 'white',
-              headerTitleStyle: {
-                fontFamily: 'Nunito-Bold',
-              },
-            }}
-          />
-          <Tab.Screen
-            name="SoundSearchPage"
-            component={SoundSearchPage}
-            options={{
-              title: 'Search Sound',
-              headerStyle: {
-                backgroundColor: 'black',
-                elevation: 0,
-                shadowOffset: {
-                  width: 0,
-                  height: 0
-                }
-              },
-              headerTintColor: 'white',
-              headerTitleStyle: {
-                fontFamily: 'Nunito-Bold',
-              },
-            }}
-          />
-          <Tab.Screen
-            name="SearchPage"
-            component={SearchPage}
-            options={{
-              title: 'Search',
-              headerStyle: {
-                backgroundColor: 'black',
-                elevation: 0,
-                shadowOffset: {
-                  width: 0,
-                  height: 0
-                }
-              },
-              headerTintColor: 'white',
-              headerTitleStyle: {
-                fontFamily: 'Nunito-Bold',
-              },
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </SafeAreaView >
+          >
+            <Tab.Screen
+              name="HomePage"
+              component={HomePage}
+              options={{
+                title: 'Home',
+                headerStyle: {
+                  backgroundColor: 'black',
+                  elevation: 0,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0
+                  }
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontFamily: 'Nunito-Bold',
+                },
+              }}
+            />
+            <Tab.Screen
+              name="LibraryPage"
+              component={LibraryPage}
+              options={{
+                headerShown: false
+              }}
+            />
+            <Tab.Screen
+              name="RecPage"
+              component={RecPage}
+              options={{
+                title: 'Recomendations',
+                headerStyle: {
+                  backgroundColor: 'black',
+                  elevation: 0,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0
+                  }
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontFamily: 'Nunito-Bold',
+                },
+              }}
+            />
+            <Tab.Screen
+              name="SoundSearchPage"
+              component={SoundSearchPage}
+              options={{
+                title: 'Search Sound',
+                headerStyle: {
+                  backgroundColor: 'black',
+                  elevation: 0,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0
+                  }
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontFamily: 'Nunito-Bold',
+                },
+              }}
+            />
+            <Tab.Screen
+              name="SearchPage"
+              component={SearchPage}
+              options={{
+                title: 'Search',
+                headerStyle: {
+                  backgroundColor: 'black',
+                  elevation: 0,
+                  shadowOffset: {
+                    width: 0,
+                    height: 0
+                  }
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontFamily: 'Nunito-Bold',
+                },
+              }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </SafeAreaView >
+    </View>
+
   );
 }
 

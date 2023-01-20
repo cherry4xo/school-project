@@ -4,7 +4,7 @@ import { View, Button, StyleSheet, TouchableHighlight } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
 import Player from './Player/AudioSlider'
-import Track from '../assets/audio/Rammstein_-_Adieu.mp3'
+import Track from '../assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
 import trackIcon from '../assets/img/avatar.jpg'
 
 import HomeSVG from "./svgIcons/HomeSVG";
@@ -76,7 +76,7 @@ export default function NavBar() {
 
     return (
         <View style={styles.Content}>
-            <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Adieu'} audio={Track} />
+            <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchland'} audio={Track} />
             <View style={styles.NavBar}>
                 <TouchableHighlight
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}

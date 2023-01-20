@@ -4,14 +4,17 @@ import {
     StyleSheet,
     Text,
     Image,
-    TouchableOpacity
+    ImageBackground,
+    Dimensions,
+    TouchableOpacity,
 } from "react-native";
+import Slider from '@react-native-community/slider'
 import { Audio } from 'expo-av';
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
+import DigitalTimeString from "./DigitalTimeString";
 
-const TRACK_SIZE = 4;
-const THUMB_SIZE = 20;
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default class AudioSlider extends PureComponent {
 
@@ -19,14 +22,21 @@ export default class AudioSlider extends PureComponent {
         super(props);
         this.state = {
             playing: false,
-            isExpanded: false,
+            isExpanded: true,
+            currentTime: 0, // miliseconds
+            duration: 0,
         }
+
+        this.setTrackValue = this.setTrackValue.bind(this)
 
         this.expandPlayer = this.expandPlayer.bind(this)
 
         this.collapsPlayer = this.collapsPlayer.bind(this)
-
     };
+
+    setTrackValue(value) {
+        this.setState({ trackValue: value })
+    }
 
     expandPlayer() {
         this.setState({ isExpanded: true })
@@ -34,6 +44,10 @@ export default class AudioSlider extends PureComponent {
 
     collapsPlayer() {
         this.setState({ isExpanded: false })
+    }
+
+    mapAudioToCurrentTime = async () => {
+        await this.soundObject.setPositionAsync(this.state.currentTime);
     }
 
     onPressPlayPause = async () => {
@@ -54,9 +68,20 @@ export default class AudioSlider extends PureComponent {
         this.setState({ playing: false }) // This is for the play-button to go to pause
     }
 
+    runSlider = () => {
+        if (this.state.playing && this.state.duration - 1 > this.state.currentTime) {
+            let prevTime = this.state.currentTime
+            this.setState({ currentTime: prevTime + 1000 })
+        }
+    }
+
     async componentDidMount() {
         this.soundObject = new Audio.Sound();
         await this.soundObject.loadAsync(this.props.audio);
+        const status = await this.soundObject.getStatusAsync();
+        this.setState({ duration: status["durationMillis"] });
+
+        setInterval(this.runSlider, 1000);
     }
 
     async componentWillUnmount() {
@@ -68,83 +93,132 @@ export default class AudioSlider extends PureComponent {
             <View>
                 {
                     this.state.isExpanded ?
-                        <View style={[styles.content, this.state.isExpanded ? styles.expandedContainerStyle : null]}
+                        // expanded player
+                        <ImageBackground
+                            style={{
+                                height: windowHeight,
+                                top: -40,
+                                paddingTop: 40,
+                                resizeMode: 'cover',
+                                justifyContent: 'center',
+                            }}
+                            blurRadius={50}
+                            source={this.props.trackIcon}
                         >
-                            <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }} onPress={this.collapsPlayer}>
-                                <AntDesign name="close" size={35} color="white" />
+                            <View style={[styles.content, styles.expandedContainerStyle]}>
+                                <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }} onPress={this.collapsPlayer}>
+                                    <AntDesign name="close" size={35} color="white" />
+                                </TouchableOpacity>
+
+                                <View style={styles.expandedContainerStyle}>
+                                    <Image source={this.props.trackIcon} style={[styles.trackPhoto, { width: 300, height: 300 }]} />
+
+                                    <View style={styles.expandedTrackInfo}>
+                                        <View>
+                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
+                                            <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackAuthor}</Text>
+                                        </View>
+                                        <TouchableOpacity>
+                                            <AntDesign name="pluscircleo" size={24} color="white" />
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                                    <Slider
+                                        minimumValue={0}
+                                        maximumValue={this.state.duration}
+                                        minimumTrackTintColor="red"
+                                        style={styles.slider}
+                                        value={this.state.currentTime}
+                                        onSlidingComplete={
+                                            currentTime => {
+                                                this.setState({ currentTime })
+                                                this.mapAudioToCurrentTime()
+                                            }
+                                        }
+                                    />
+
+                                    <View style={{
+                                        flex: 0,
+                                        width: '100%',
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                    }}>
+                                        <DigitalTimeString time={this.state.currentTime} />
+                                        <DigitalTimeString time={this.state.duration} />
+                                    </View>
+
+                                    <View style={styles.expandedControlBtns}>
+                                        <TouchableOpacity
+                                            style={styles.playBTN}
+                                            onPress={() => { }}
+                                        >
+                                            <AntDesign name="banckward" size={40} color="white" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.playBTN}
+                                            onPress={this.onPressPlayPause}
+                                        >
+                                            {
+                                                this.state.playing
+                                                    ?
+                                                    <MaterialIcons name="pause" size={50} color="white" />
+                                                    :
+                                                    <Entypo name="controller-play" size={50} color="white" />
+                                            }
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.playBTN}
+                                            onPress={() => { }}
+                                        >
+                                            <AntDesign name="forward" size={40} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </ImageBackground>
+                        :
+                        //collapsed player
+                        <View>
+                            <View style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+                                <Slider style={{ height: 0, width: '107%' }}
+                                    thumbTintColor="rgba(0,0,0,0)"
+                                    minimumValue={0}
+                                    maximumValue={this.state.duration}
+                                    value={this.state.currentTime}
+                                    minimumTrackTintColor="red"
+                                />
+                            </View>
+                            <TouchableOpacity style={styles.content}
+                                onPress={this.expandPlayer}
+                            >
+                                <View style={styles.player}>
+
+                                    <View style={styles.playBtnContainer}>
+                                        <TouchableOpacity
+                                            style={styles.playBTN}
+                                            onPress={this.onPressPlayPause}
+                                        >
+                                            {
+                                                this.state.playing
+                                                    ?
+                                                    <MaterialIcons name="pause" size={50} color="white" />
+                                                    :
+                                                    <Entypo name="controller-play" size={50} color="white" />
+                                            }
+                                        </TouchableOpacity>
+                                        <View>
+                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
+                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackAuthor}</Text>
+                                        </View>
+                                    </View>
+
+                                    <Image source={this.props.trackIcon} style={styles.trackPhoto} />
+
+                                </View>
                             </TouchableOpacity>
-
-                            <View style={styles.expandedContainerStyle}>
-                                <Image source={this.props.trackIcon} style={[styles.trackPhoto, { width: 300, height: 300 }]} />
-
-                                <View style={styles.expandedTrackInfo}>
-                                    <View>
-                                        <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackName}</Text>
-                                        <Text numberOfLines={1} style={styles.text}>{this.props.trackAuthor}</Text>
-                                    </View>
-                                    <TouchableOpacity>
-                                        <AntDesign name="pluscircleo" size={24} color="white" />
-                                    </TouchableOpacity>
-
-                                </View>
-
-                                <View style={styles.expandedControlBtns}>
-                                    <TouchableOpacity
-                                        style={styles.playBTN}
-                                        onPress={() => { }}
-                                    >
-                                        <AntDesign name="banckward" size={40} color="white" />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.playBTN}
-                                        onPress={this.onPressPlayPause}
-                                    >
-                                        {
-                                            this.state.playing
-                                                ?
-                                                <MaterialIcons name="pause" size={50} color="white" />
-                                                :
-                                                <Entypo name="controller-play" size={50} color="white" />
-                                        }
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.playBTN}
-                                        onPress={() => { }}
-                                    >
-                                        <AntDesign name="forward" size={40} color="white" />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View> :
-                        <TouchableOpacity style={styles.content}
-                            onPress={this.expandPlayer}
-                        >
-                            <View style={styles.player}>
-                                <View style={styles.playBtnContainer}>
-                                    <TouchableOpacity
-                                        style={styles.playBTN}
-                                        onPress={this.onPressPlayPause}
-                                    >
-                                        {
-                                            this.state.playing
-                                                ?
-                                                <MaterialIcons name="pause" size={50} color="white" />
-                                                :
-                                                <Entypo name="controller-play" size={50} color="white" />
-                                        }
-                                    </TouchableOpacity>
-                                    <View>
-                                        <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
-                                        <Text numberOfLines={1} style={styles.text}>{this.props.trackAuthor}</Text>
-                                    </View>
-                                </View>
-
-                                <Image source={this.props.trackIcon} style={styles.trackPhoto} />
-
-                            </View>
-                        </TouchableOpacity>
+                        </View>
                 }
-
             </View>
         );
     };
@@ -204,15 +278,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        paddingTop: '8%',
-        paddingBottom: '20%',
+        paddingTop: '10%',
+        paddingBottom: '15%',
         position: 'relative'
     },
     expandedControlBtns: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: "space-around",
-        alignItems: 'center',
         width: '80%',
         marginVertical: '5%'
     },
@@ -223,5 +296,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
+    },
+    slider: {
+        width: '100%',
+        height: '10%',
     }
 })
