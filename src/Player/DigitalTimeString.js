@@ -20,9 +20,7 @@ export default class DigitalTimeString extends React.Component {
         }
         let total_seconds = total_milli_seconds / 1000;
         total_seconds = Number((total_seconds).toFixed(0));
-
-        let hours = Math.floor(total_seconds / 3600);
-        let seconds_left = total_seconds - hours * 3600;
+        let seconds_left = total_seconds
         let minutes = Math.floor(seconds_left / 60);
         let seconds = seconds_left - minutes * 60;
 

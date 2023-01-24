@@ -6,8 +6,8 @@ function HomeSVG(props) {
     return (
         <Svg
             xmlns="http://www.w3.org/2000/svg"
-            width={(props.fill == 'red') ? '50' : '40'}
-            height={(props.fill == 'red') ? '50' : '40'}
+            width={(props.fill == 'red') ? '40' : '30'}
+            height={(props.fill == 'red') ? '40' : '30'}
             fill="none"
             viewBox="0 0 30 30"
         >

@@ -29,12 +29,12 @@ export default function HomePage({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <ImageBackground blurRadius={15} source={bgImage} style={styles.image} >
+            <ImageBackground blurRadius={2} source={bgImage} style={styles.image} >
                 <View style={styles.greeting}>
                     <Image source={avatar} style={styles.userAvatar} />
                     <View style={styles.greetingTextBlock}>
                         <Text style={styles.greetingText}>Good {time},</Text>
-                        <Text onPress={() => navigation.navigate('SongsList')} style={styles.greetingText}>Macheloger!</Text>
+                        <Text style={styles.greetingText}>Macheloger!</Text>
                     </View>
                 </View>
             </ImageBackground>

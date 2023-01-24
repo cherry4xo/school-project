@@ -22,6 +22,11 @@ import SoundSearchPage from './src/Roots/SoundSearchPage'
 import HomeSVG from './src/svgIcons/HomeSVG';
 import { setAudioModeAsync } from 'expo-av/build/Audio';
 
+import Player from './src/Player/AudioSlider'
+import Track from './assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
+import trackIcon from './assets/img/avatar.jpg'
+
+
 export default function App() {
 
   let [fontsLoaded] = useFonts({
@@ -34,6 +39,7 @@ export default function App() {
   return (
     <View>
       <SafeAreaView style={styles.container}>
+
         <NavigationContainer>
           <Tab.Navigator
             initialRouteName='Home'
@@ -129,6 +135,7 @@ export default function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
+        <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchland'} audio={Track} />
       </SafeAreaView >
     </View>
 

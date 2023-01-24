@@ -22,7 +22,7 @@ export default class AudioSlider extends PureComponent {
         super(props);
         this.state = {
             playing: false,
-            isExpanded: true,
+            isExpanded: false,
             currentTime: 0, // miliseconds
             duration: 0,
         }
@@ -69,9 +69,15 @@ export default class AudioSlider extends PureComponent {
     }
 
     runSlider = () => {
-        if (this.state.playing && this.state.duration - 1 > this.state.currentTime) {
+        if (this.state.playing && this.state.duration > this.state.currentTime + 1000) {
             let prevTime = this.state.currentTime
             this.setState({ currentTime: prevTime + 1000 })
+        } else {
+            //on end of the song function
+            if (this.state.playing) {
+                this.onPressPlayPause()
+                // console.log('end of the song')
+            }
         }
     }
 
@@ -90,17 +96,21 @@ export default class AudioSlider extends PureComponent {
 
     render() {
         return (
-            <View>
+            <View style={{
+            }}>
                 {
                     this.state.isExpanded ?
                         // expanded player
                         <ImageBackground
                             style={{
                                 height: windowHeight,
-                                top: -40,
+                                top: -windowHeight + 40,
+                                width: windowWidth,
+                                position: 'absolute',
                                 paddingTop: 40,
                                 resizeMode: 'cover',
                                 justifyContent: 'center',
+                                alignItems: 'center'
                             }}
                             blurRadius={50}
                             source={this.props.trackIcon}
@@ -111,7 +121,9 @@ export default class AudioSlider extends PureComponent {
                                 </TouchableOpacity>
 
                                 <View style={styles.expandedContainerStyle}>
-                                    <Image source={this.props.trackIcon} style={[styles.trackPhoto, { width: 300, height: 300 }]} />
+                                    <Image source={this.props.trackIcon} style={[styles.trackPhoto, {
+                                        width: 300, height: 300
+                                    }]} />
 
                                     <View style={styles.expandedTrackInfo}>
                                         <View>
@@ -127,10 +139,11 @@ export default class AudioSlider extends PureComponent {
                                     <Slider
                                         minimumValue={0}
                                         maximumValue={this.state.duration}
+                                        step={1000}
                                         minimumTrackTintColor="red"
-                                        style={styles.slider}
+                                        style={[styles.slider, { width: '90%' }]}
                                         value={this.state.currentTime}
-                                        onSlidingComplete={
+                                        onValueChange={
                                             currentTime => {
                                                 this.setState({ currentTime })
                                                 this.mapAudioToCurrentTime()
@@ -140,8 +153,9 @@ export default class AudioSlider extends PureComponent {
 
                                     <View style={{
                                         flex: 0,
-                                        width: '100%',
+                                        width: '90%',
                                         flexDirection: "row",
+                                        alignItems: 'center',
                                         justifyContent: "space-between",
                                     }}>
                                         <DigitalTimeString time={this.state.currentTime} />
@@ -179,16 +193,19 @@ export default class AudioSlider extends PureComponent {
                         </ImageBackground>
                         :
                         //collapsed player
-                        <View>
-                            <View style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
-                                <Slider style={{ height: 0, width: '107%' }}
-                                    thumbTintColor="rgba(0,0,0,0)"
-                                    minimumValue={0}
-                                    maximumValue={this.state.duration}
-                                    value={this.state.currentTime}
-                                    minimumTrackTintColor="red"
-                                />
-                            </View>
+                        <View style={{
+                            position: 'absolute',
+                            bottom: 50,
+                            backgroundColor: 'black',
+                            overflow: 'hidden'
+                        }}>
+                            <Slider style={{ height: 0, width: windowWidth }}
+                                thumbTintColor="rgba(0,0,0,0)"
+                                minimumValue={0}
+                                maximumValue={this.state.duration}
+                                value={this.state.currentTime}
+                                minimumTrackTintColor="red"
+                            />
                             <TouchableOpacity style={styles.content}
                                 onPress={this.expandPlayer}
                             >
@@ -208,8 +225,8 @@ export default class AudioSlider extends PureComponent {
                                             }
                                         </TouchableOpacity>
                                         <View>
-                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
-                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackAuthor}</Text>
+                                            <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackName}</Text>
+                                            <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackAuthor}</Text>
                                         </View>
                                     </View>
 

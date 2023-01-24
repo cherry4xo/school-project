@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Button, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Button, Text, StyleSheet, TouchableHighlight } from "react-native";
 
 import { useNavigation } from '@react-navigation/native';
 
-import Player from './Player/AudioSlider'
-import Track from '../assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
-import trackIcon from '../assets/img/avatar.jpg'
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
-import HomeSVG from "./svgIcons/HomeSVG";
-import LibrarySVG from "./svgIcons/LibrarySVG";
-import RecPageSVG from "./svgIcons/RecPageSVG";
-import SearchSVG from "./svgIcons/SearchSVG";
-import SoundSearchSVG from "./svgIcons/SoundSearchSVG";
+
 import { setAudioModeAsync } from "expo-av/build/Audio";
 
 setAudioModeAsync({
@@ -20,93 +16,108 @@ setAudioModeAsync({
 
 export default function NavBar() {
 
-    const [homeImgColor, setHomeImgColor] = useState('red')
-    const [searchImgColor, setSearchImgColor] = useState('white')
-    const [recImgColor, setRecImgColor] = useState('white')
-    const [soundSearchImgColor, setSoundSearchImgColor] = useState('white')
-    const [libraryImgColor, setLibraryImgColor] = useState('white')
+    const [homeImg, setHomeImg] = useState('home-sharp')
+    const [searchImg, setSearchImg] = useState('search-outline')
+    const [recImg, setRecImg] = useState('favorite-outline')
+    const [soundSearchImg, setSoundSearchImg] = useState('record-circle-outline')
+    const [libraryImg, setLibraryImg] = useState('library-outline')
 
     const navigation = useNavigation();
 
     const toHomePage = () => {
         navigation.navigate('HomePage')
 
-        setHomeImgColor('red')
-        setSearchImgColor('white')
-        setRecImgColor('white')
-        setSoundSearchImgColor('white')
-        setLibraryImgColor('white')
+        setHomeImg('home-sharp')
+        setSearchImg('search-outline')
+        setRecImg('favorite-outline')
+        setSoundSearchImg('record-circle-outline')
+        setLibraryImg('library-outline')
     }
     const toLibraryPage = () => {
         navigation.navigate('LibraryPage')
 
-        setHomeImgColor('white')
-        setSearchImgColor('white')
-        setRecImgColor('white')
-        setSoundSearchImgColor('white')
-        setLibraryImgColor('red')
+        setHomeImg('ios-home-outline')
+        setSearchImg('search-outline')
+        setRecImg('favorite-outline')
+        setSoundSearchImg('record-circle-outline')
+        setLibraryImg('library')
     }
     const toSoundSearchPage = () => {
         navigation.navigate('SoundSearchPage')
 
-        setHomeImgColor('white')
-        setSearchImgColor('white')
-        setRecImgColor('white')
-        setSoundSearchImgColor('red')
-        setLibraryImgColor('white')
+        setHomeImg('ios-home-outline')
+        setSearchImg('search-outline')
+        setRecImg('favorite-outline')
+        setSoundSearchImg('record-circle')
+        setLibraryImg('library-outline')
     }
     const toRecPage = () => {
         navigation.navigate('RecPage')
 
-        setHomeImgColor('white')
-        setSearchImgColor('white')
-        setRecImgColor('red')
-        setSoundSearchImgColor('white')
-        setLibraryImgColor('white')
+        setHomeImg('ios-home-outline')
+        setSearchImg('search-outline')
+        setRecImg('favorite')
+        setSoundSearchImg('record-circle-outline')
+        setLibraryImg('library-outline')
     }
     const toSearchPage = () => {
         navigation.navigate('SearchPage')
 
-        setHomeImgColor('white')
-        setSearchImgColor('red')
-        setRecImgColor('white')
-        setSoundSearchImgColor('white')
-        setLibraryImgColor('white')
+        setHomeImg('ios-home-outline')
+        setSearchImg('search')
+        setRecImg('favorite-outline')
+        setSoundSearchImg('record-circle-outline')
+        setLibraryImg('library-outline')
     }
 
     return (
         <View style={styles.Content}>
-            <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchland'} audio={Track} />
             <View style={styles.NavBar}>
                 <TouchableHighlight
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    style={{ width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={toSoundSearchPage}
                 >
-                    <SoundSearchSVG fill={soundSearchImgColor} />
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name={soundSearchImg} size={24} color="white" />
+                        <Text style={[styles.text, { fontSize: 10 }]}>Find Song</Text>
+                    </View>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    style={{ width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={toRecPage}
                 >
-                    <RecPageSVG fill={recImgColor} />
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <MaterialIcons name={recImg} size={24} color="white" />
+                        <Text style={[styles.text, { fontSize: 10 }]}>Suggestion</Text>
+                    </View>
+
                 </TouchableHighlight>
                 <TouchableHighlight
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    style={{ width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={toHomePage}
                 >
-                    <HomeSVG fill={homeImgColor} />
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Ionicons name={homeImg} size={24} color="white" />
+                        <Text style={[styles.text, { fontSize: 10 }]}>Home</Text>
+                    </View>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    style={{ width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={toLibraryPage}
                 >
-                    <LibrarySVG fill={libraryImgColor} />
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Ionicons name={libraryImg} size={24} color="white" />
+                        <Text style={[styles.text, { fontSize: 10 }]}>Library</Text>
+                    </View>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    style={{ width: 60, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={toSearchPage}
                 >
-                    <SearchSVG fill={searchImgColor} />
+                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Ionicons name={searchImg} size={24} color="white" />
+                        <Text style={[styles.text, { fontSize: 10 }]}>Search</Text>
+                    </View>
                 </TouchableHighlight>
             </View>
         </View >
@@ -116,6 +127,7 @@ export default function NavBar() {
 const styles = StyleSheet.create({
     Content: {
         width: '100%',
+        height: 50
     },
     NavBar: {
         width: '100%',
@@ -127,4 +139,9 @@ const styles = StyleSheet.create({
         borderTopColor: 'rgb(96,96,96)',
         borderTopWidth: '1px',
     },
+    text: {
+        color: 'white',
+        fontSize: 24,
+        fontFamily: 'Nunito-Bold',
+    }
 })
