@@ -4,10 +4,10 @@
     "slug": "tutorial",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/music_icon.svg",
+    "icon": "./assets/img/downloadImage.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/music_icon.svg",
+      "image": "./assets/img/downloadImage.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,12 +22,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/music_icon.svg",
+        "foregroundImage": "./assets/img/downloadImage.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/music_icon.svg"
+      "favicon": "./assets/img/downloadImage.png"
     }
   }
 }

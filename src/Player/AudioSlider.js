@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import Slider from '@react-native-community/slider'
+
 import { Audio } from 'expo-av';
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DigitalTimeString from "./DigitalTimeString";
@@ -47,7 +48,11 @@ export default class AudioSlider extends PureComponent {
     }
 
     mapAudioToCurrentTime = async () => {
-        await this.soundObject.setPositionAsync(this.state.currentTime);
+        try {
+            await this.soundObject.setPositionAsync(this.state.currentTime);
+        } catch (error) {
+        }
+
     }
 
     onPressPlayPause = async () => {
@@ -55,20 +60,34 @@ export default class AudioSlider extends PureComponent {
             await this.pause();
             return
         }
-        await this.play();
+        try {
+            await this.play();
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     play = async () => {
-        await this.soundObject.playAsync();
+        try {
+            await this.soundObject.playAsync();
+        } catch (error) {
+            console.log(error)
+        }
+
         this.setState({ playing: true }) // This is for the play-button to go to play
     }
 
     pause = async () => {
-        await this.soundObject.pauseAsync();
+        try {
+            await this.soundObject.pauseAsync();
+        } catch (error) {
+            console.log(error)
+        }
+
         this.setState({ playing: false }) // This is for the play-button to go to pause
     }
 
-    runSlider = () => {
+    runSlider = async () => {
         if (this.state.playing && this.state.duration > this.state.currentTime + 1000) {
             let prevTime = this.state.currentTime
             this.setState({ currentTime: prevTime + 1000 })

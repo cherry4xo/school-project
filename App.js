@@ -19,13 +19,16 @@ import LibraryPage from './src/Roots/LibraryPage'
 import RecPage from './src/Roots/RecPage'
 import SearchPage from './src/Roots/SearchPage'
 import SoundSearchPage from './src/Roots/SoundSearchPage'
-import HomeSVG from './src/svgIcons/HomeSVG';
-import { setAudioModeAsync } from 'expo-av/build/Audio';
 
 import Player from './src/Player/AudioSlider'
 import Track from './assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
 import trackIcon from './assets/img/avatar.jpg'
 
+import { setAudioModeAsync } from "expo-av/build/Audio";
+
+setAudioModeAsync({
+  playsInSilentModeIOS: true,
+})
 
 export default function App() {
 

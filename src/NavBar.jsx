@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Button, Text, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-
-
-import { setAudioModeAsync } from "expo-av/build/Audio";
-
-setAudioModeAsync({
-    playsInSilentModeIOS: true,
-})
 
 export default function NavBar() {
 
