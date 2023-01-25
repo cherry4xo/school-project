@@ -120,7 +120,8 @@ export default function NavBar() {
 const styles = StyleSheet.create({
     Content: {
         width: '100%',
-        height: 50
+        height: 50,
+        zIndex: 5
     },
     NavBar: {
         width: '100%',

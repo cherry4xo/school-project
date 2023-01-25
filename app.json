@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tutorial",
-    "slug": "tutorial",
+    "name": "Music App",
+    "slug": "Music App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/img/downloadImage.png",

@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 //fonts
-import { useFonts } from 'expo-font';
+import { useFonts } from 'expo-font'
 import AppLoading from 'expo-app-loading'
 
 //components

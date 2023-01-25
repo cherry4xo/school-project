@@ -31,7 +31,7 @@ export default class DigitalTimeString extends React.Component {
     render() {
         let time = this.convertNumberToTime(this.props.time);
         return (
-            <Text style={{ color: 'white' }}>
+            <Text style={{ color: 'white', fontFamily: 'Nunito-Bold' }}>
                 {time}
             </Text>
         )
