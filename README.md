@@ -1,6 +1,6 @@
 This is a front-end part of my project for MBSTU project.
 
-*** Later I'll add some more information about this very intresting repo) ***
+*** (Later I'll add some more information about this very intresting repo) ***
 
 Идея алгоритма поиска песен:
 1) Для всех треков на сервере лежит их цифровая версия методом преобразования фурье, сжатые до какой-то длинны
