@@ -28,7 +28,6 @@
     "react-native": "0.70.5",
     "react-native-audio-4expo": "^0.0.7",
     "react-native-audio-recorder-player": "^3.5.3",
-    "react-native-reanimated": "^2.14.4",
     "react-native-safe-area": "^0.5.1",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "~3.18.0",

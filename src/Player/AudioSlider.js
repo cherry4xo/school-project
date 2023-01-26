@@ -48,7 +48,6 @@ export default class AudioSlider extends PureComponent {
     }
 
     expandPlayer() {
-        // this.setHeight(-windowHeight + 35)
         Animated.timing(this.state.height, {
             toValue: -windowHeight + 35,
             useNativeDriver: false,
