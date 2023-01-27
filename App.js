@@ -138,7 +138,7 @@ export default function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-        <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchland'} audio={Track} />
+        <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchlandffffffffffffffdfdfsdgdsgsd'} audio={Track} />
       </SafeAreaView >
     </View>
 

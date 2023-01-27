@@ -12,7 +12,11 @@ import {
 import Slider from '@react-native-community/slider'
 
 import { Audio } from 'expo-av';
+
+import TextTicker from 'react-native-text-ticker'
+
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
+
 import DigitalTimeString from "./DigitalTimeString";
 
 const windowWidth = Dimensions.get('window').width;
@@ -27,24 +31,31 @@ export default class AudioSlider extends PureComponent {
             isExpanded: false,
             currentTime: 0, // miliseconds
             duration: 0,
-            height: new Animated.Value(40)
+            height: new Animated.Value(40),
+            songIsSaved: false
         }
+
+        this.setSongIsSaved = this.setSongIsSaved.bind(this)
 
         this.setHeight = this.setHeight.bind(this)
 
-        this.setTrackValue = this.setTrackValue.bind(this)
+        this.setCurrentTime = this.setCurrentTime.bind(this)
 
         this.expandPlayer = this.expandPlayer.bind(this)
 
         this.collapsPlayer = this.collapsPlayer.bind(this)
     };
 
+    setSongIsSaved(value) {
+        this.setState({ songIsSaved: value })
+    }
+
     setHeight(value) {
         this.setState({ height: value })
     }
 
-    setTrackValue(value) {
-        this.setState({ trackValue: value })
+    setCurrentTime(value) {
+        this.setState({ currentTime: value })
     }
 
     expandPlayer() {
@@ -113,8 +124,17 @@ export default class AudioSlider extends PureComponent {
             //on end of the song function
             if (this.state.playing) {
                 this.onPressPlayPause()
+                this.setCurrentTime(0)
+                this.mapAudioToCurrentTime()
                 // console.log('end of the song')
             }
+        }
+    }
+
+    //Saving a song to the user lybrary
+    saveSong() {
+        if (this.songIsSaved) {
+
         }
     }
 
@@ -131,10 +151,11 @@ export default class AudioSlider extends PureComponent {
         await this.soundObject.unloadAsync();
     }
 
+    trackNameAmountOfSymbols = this.props.trackName.length
+
     render() {
         return (
-            <View style={{
-            }}>
+            <View>
                 {/* expanded player */}
                 <Animated.View
                     style={{
@@ -169,12 +190,40 @@ export default class AudioSlider extends PureComponent {
                                 }]} />
 
                                 <View style={styles.expandedTrackInfo}>
-                                    <View>
-                                        <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
-                                        <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackAuthor}</Text>
-                                    </View>
-                                    <TouchableOpacity>
-                                        <AntDesign name="pluscircleo" size={24} color="white" />
+                                    {this.trackNameAmountOfSymbols > 23 ?
+                                        <View>
+                                            <TextTicker
+                                                style={{
+                                                    width: 200,
+                                                    color: 'white',
+                                                    fontSize: '20pt',
+                                                    fontFamily: 'Nunito-Bold',
+                                                }}
+                                                duration={10000}
+                                                loop
+                                                repeatSpacer={100}
+                                                marqueeDelay={1000}
+                                            >
+                                                {this.props.trackName}
+                                            </TextTicker>
+                                            <Text numberOfLines={1} style={[styles.text, { opacity: 0.8, fontSize: 16 }]}>{this.props.trackAuthor}</Text>
+                                        </View>
+                                        :
+                                        <View>
+                                            <Text numberOfLines={1} style={styles.text}>{this.props.trackName}</Text>
+                                            <Text numberOfLines={1} style={[styles.text, { opacity: 0.8, fontSize: 16 }]}>{this.props.trackAuthor}</Text>
+                                        </View>
+                                    }
+                                    <TouchableOpacity style={{ height: '100%' }} onPress={() => {
+                                        this.setSongIsSaved(!this.state.songIsSaved)
+                                    }}>
+                                        {
+                                            this.state.songIsSaved
+                                                ?
+                                                <AntDesign name="minuscircleo" size={24} color="white" />
+                                                :
+                                                <AntDesign name="pluscircleo" size={24} color="white" />
+                                        }
                                     </TouchableOpacity>
 
                                 </View>
@@ -242,10 +291,12 @@ export default class AudioSlider extends PureComponent {
                         <View style={{
                             position: 'absolute',
                             bottom: 50,
-                            backgroundColor: 'black',
-                            overflow: 'hidden'
+                            // backgroundColor: 'black',
+                            overflow: 'hidden',
+                            height: 50,
+                            backgroundColor: 'black'
                         }}>
-                            <Slider style={{ height: 0, width: '76%', left: '-2%' }}
+                            <Slider style={{ height: 0, width: '106%', left: '-3%' }}
                                 thumbTintColor="rgba(0,0,0,0)"
                                 minimumValue={0}
                                 maximumValue={this.state.duration}
@@ -256,27 +307,57 @@ export default class AudioSlider extends PureComponent {
                                 onPress={this.expandPlayer}
                             >
                                 <View style={styles.player}>
-
-                                    <View style={styles.playBtnContainer}>
-                                        <TouchableOpacity
-                                            style={styles.playBTN}
-                                            onPress={this.onPressPlayPause}
-                                        >
-                                            {
-                                                this.state.playing
-                                                    ?
-                                                    <MaterialIcons name="pause" size={50} color="white" />
+                                    <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <View style={styles.playBtnContainer}>
+                                            <TouchableOpacity
+                                                style={[styles.playBTN, { marginRight: 20 }]}
+                                                onPress={this.onPressPlayPause}
+                                            >
+                                                {
+                                                    this.state.playing
+                                                        ?
+                                                        <MaterialIcons name="pause" size={30} color="white" />
+                                                        :
+                                                        <Entypo name="controller-play" size={30} color="white" />
+                                                }
+                                            </TouchableOpacity>
+                                            <View>
+                                                {this.trackNameAmountOfSymbols > 23 ?
+                                                    <View>
+                                                        <TextTicker
+                                                            style={[styles.text, { fontSize: 16 }]}
+                                                            duration={10000}
+                                                            loop
+                                                            repeatSpacer={100}
+                                                            marqueeDelay={1000}
+                                                        >
+                                                            {this.props.trackName}
+                                                        </TextTicker>
+                                                        <Text numberOfLines={1} style={[styles.text, { fontSize: 14, color: 'grey' }]}>{this.props.trackAuthor}</Text>
+                                                    </View>
                                                     :
-                                                    <Entypo name="controller-play" size={50} color="white" />
+                                                    <View>
+                                                        <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackName}</Text>
+                                                        <Text numberOfLines={1} style={[styles.text, { fontSize: 14, color: 'grey' }]}>{this.props.trackAuthor}</Text>
+                                                    </View>
+                                                }
+
+                                            </View>
+                                        </View>
+                                        <TouchableOpacity style={{ height: '100%' }} onPress={() => {
+                                            this.setSongIsSaved(!this.state.songIsSaved)
+                                        }}>
+                                            {
+                                                this.state.songIsSaved
+                                                    ?
+                                                    <AntDesign name="minuscircleo" size={24} color="white" />
+                                                    :
+                                                    <AntDesign name="pluscircleo" size={24} color="white" />
                                             }
                                         </TouchableOpacity>
-                                        <View>
-                                            <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackName}</Text>
-                                            <Text numberOfLines={1} style={[styles.text, { fontSize: 16 }]}>{this.props.trackAuthor}</Text>
-                                        </View>
                                     </View>
 
-                                    <Image source={this.props.trackIcon} style={styles.trackPhoto} />
+
 
                                 </View>
                             </TouchableOpacity>
@@ -290,10 +371,10 @@ export default class AudioSlider extends PureComponent {
 
 const styles = StyleSheet.create({
     player: {
+        display: 'flex',
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        height: '100%',
         justifyContent: "space-between",
         width: '100%',
     },
@@ -302,7 +383,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 75,
+        height: 50,
         paddingHorizontal: 15
     },
     playBTN: {
@@ -311,23 +392,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
-        marginRight: 10
     },
     text: {
         color: 'white',
         fontSize: '20pt',
         fontFamily: 'Nunito-Bold',
-        paddingVertical: 3,
         flexWrap: 'nowrap',
         overflow: 'hidden',
-        maxWidth: 200,
-
+        width: 200,
     },
     playBtnContainer: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     trackPhoto: {
         width: 50,
