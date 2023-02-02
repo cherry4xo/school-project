@@ -12,6 +12,11 @@ getGenre = pydantic_model_creator(models.Genre, exclude_readonly=True, exclude=(
 getAlbum = pydantic_model_creator(models.Album, exclude_readonly=True, exclude=('artists', ))
 getArtist = pydantic_model_creator(models.Artist)
 
+Artist_get_schema = pydantic_model_creator(models.Artist)
+'''Artist_genres_get_schema = pydantic_model_creator(models.Artist.genres)
+Artist_albums_get_schema = pydantic_model_creator(models.Artist.albums)
+Artist_tracks_get_schema = pydantic_model_creator(models.Artist.tracks)
+'''
 
 class Artist_base(PydanticModel):
     name: str
@@ -31,9 +36,6 @@ class Artist_in_db(Artist_base):
 
 class Artist_create(Artist_base):
     picture_file_path: str
-    genres: List[getGenre] = []
-    albums: List[getAlbum] = []
-    tracks: List[getTrack] = []
 
     class Config:
         orm_mode=True
@@ -62,10 +64,10 @@ class Artist_update(Artist_base):
 
 class Artist_get(Artist_base):
     picture_file_path: str
-    libraries: List[getLibrary] = []
-    genres: List[getGenre] = []
-    albums: List[getAlbum] = []
-    tracks: List[getTrack] = []
+    '''libraries: List[int] = []
+    genres: List[int]
+    albums: List[int]
+    tracks: List[int]'''
 
     class Config:
         orm_mode=True

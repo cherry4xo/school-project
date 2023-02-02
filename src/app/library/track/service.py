@@ -18,9 +18,9 @@ class Track_service(Service_base):
     async def create(self, schema, artists: List[int] = None, album: List[int] = None, genre: List[int] = None, **kwargs) -> Optional[schemas.Create]:
         _album = await models.Album.get_or_none(id=album)
         _genre = await models.Genre.get_or_none(id=genre)
-        if not(_genre):
+        if not _genre:
             raise HTTPException(status_code=404, detail=f'Genre {genre} does not exist')
-        if not(_album):
+        if not _album:
             raise HTTPException(status_code=404, detail=f'Album {album} does not exist')
         obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
         await obj.save()

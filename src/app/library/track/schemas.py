@@ -72,8 +72,8 @@ class Track_get(Track_base):
     libraries: List[getLibrary] = []
     artists: List[getArtist] = []
     playlists: List[getPlaylist] = []
-    album: Optional[int] = None
-    genre: Optional[int] = None
+    #album: Optional[int] = None
+    #genre: Optional[int] = None
 
     class Config:
         orm_mode=True

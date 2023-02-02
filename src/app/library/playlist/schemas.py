@@ -13,10 +13,11 @@ getAlbum = pydantic_model_creator(models.Album, exclude_readonly=True, exclude=(
 getGenre = pydantic_model_creator(models.Genre, exclude_readonly=True, exclude=('playlists', ))
 getPlaylist = pydantic_model_creator(models.Playlist)
 
+Playlist_get_schema = pydantic_model_creator(models.Playlist)
+
 
 class Playlist_base(PydanticModel):
-    creator: int
-
+    picture_file_path: str
     class Config:
         orm_mode=True
 
@@ -34,7 +35,6 @@ class Playlist_create(Playlist_base):
     name: str
     description: str
     release_date: str
-    tracks: List[getTrack] = []
 
     class Config:
         orm_mode=True
@@ -60,11 +60,9 @@ class Playlist_update(Playlist_base):
 
 
 class Playlist_get(Playlist_base):
-    id: int
     name: str
     description: str
     release_date: str
-    picture_file_path: str
     tracks: List[getTrack] = []
     libraries: List[getLibrary] = []
     genres: List[getGenre] = []
