@@ -26,32 +26,32 @@ export default function SearchPage({ navigation }) {
                 <View style={styles.searchTypes}>
                     <TouchableHighlight
                         style={(searchType == 'songs') ?
-                            { borderBottomColor: 'white', borderWidth: 1 } :
+                            { borderBottomColor: '#FF0054', borderWidth: 1 } :
                             { borderBottomColor: 'black', borderWidth: 1 }}
                         onPress={() => setSearchType('songs')}
                     >
                         <Text style={[styles.searchTypeText, (searchType == 'songs') ?
-                            { color: 'white' } : { color: 'grey' }]}>
+                            { color: '#FF0054' } : { color: 'grey' }]}>
                             Songs
                         </Text>
                     </TouchableHighlight>
                     <TouchableHighlight
                         style={(searchType == 'albums') ?
-                            { borderBottomColor: 'white', borderWidth: 1 } :
+                            { borderBottomColor: '#FF0054', borderWidth: 1 } :
                             { borderBottomColor: 'black', borderWidth: 1 }}
                         onPress={() => setSearchType('albums')}
                     >
                         <Text style={[styles.searchTypeText, (searchType == 'albums') ?
-                            { color: 'white' } : { color: 'grey' }]}>Albums</Text>
+                            { color: '#FF0054' } : { color: 'grey' }]}>Albums</Text>
                     </TouchableHighlight>
                     <TouchableHighlight
                         style={(searchType == 'artists') ?
-                            { borderBottomColor: 'white', borderWidth: 1 } :
+                            { borderBottomColor: '#FF0054', borderWidth: 1 } :
                             { borderBottomColor: 'black', borderWidth: 1 }}
                         onPress={() => setSearchType('artists')}
                     >
                         <Text style={[styles.searchTypeText, (searchType == 'artists') ?
-                            { color: 'white' } : { color: 'grey' }]}>Artists</Text>
+                            { color: '#FF0054' } : { color: 'grey' }]}>Artists</Text>
                     </TouchableHighlight>
 
                 </View>

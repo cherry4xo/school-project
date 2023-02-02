@@ -34,7 +34,9 @@ export default function App() {
 
   let [fontsLoaded] = useFonts({
     'Nunito-Regular': require('./assets/fonts/Nunito/Nunito-Regular.ttf'),
-    'Nunito-Bold': require('./assets/fonts/Nunito/Nunito-Bold.ttf')
+    'Nunito-Bold': require('./assets/fonts/Nunito/Nunito-Bold.ttf'),
+    'Nunito-Light': require('./assets/fonts/Nunito/Nunito-Light.ttf'),
+    'Nunito-Medium': require('./assets/fonts/Nunito/Nunito-Medium.ttf'),
   })
 
   if (!fontsLoaded) return <AppLoading />

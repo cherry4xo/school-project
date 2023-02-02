@@ -40,7 +40,9 @@
     "react-native-text-ticker": "^1.14.0",
     "react-native-track-player": "^3.2.0-8b0cb1089409eff451fa252f2ba68b3c09f638eb",
     "react-native-web": "~0.18.9",
+    "react-redux": "^8.0.5",
     "react-timer-mixin": "^0.13.4",
+    "redux": "^4.2.1",
     "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {

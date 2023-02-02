@@ -9,6 +9,8 @@ import LibrarySongs from '../LibraryComponents/LibrarySongs';
 import LibraryAlbums from '../LibraryComponents/LibraryAlbums';
 import LibraryPlaylists from '../LibraryComponents/LibraryPlaylists';
 
+import AlbumPage from '../MusicComponents/AlbumPage'
+
 const LibraryStack = createNativeStackNavigator();
 
 export default function LibraryPage({ navigation }) {
@@ -87,6 +89,25 @@ export default function LibraryPage({ navigation }) {
                             height: 0
                         }
 
+                    },
+                    headerTintColor: 'white',
+                    headerTitleStyle: {
+                        fontFamily: 'Nunito-Bold',
+                    },
+                }}
+            />
+            <LibraryStack.Screen
+                name='AlbumPage'
+                component={AlbumPage}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        backgroundColor: 'black',
+                        elevation: 0,
+                        shadowOffset: {
+                            width: 0,
+                            height: 0
+                        }
                     },
                     headerTintColor: 'white',
                     headerTitleStyle: {

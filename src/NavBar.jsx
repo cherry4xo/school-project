@@ -17,6 +17,12 @@ export default function NavBar() {
 
     const navigation = useNavigation();
 
+    const [homeColor, setHomeColor] = useState('#FF0054')
+    const [searchColor, setSearchColor] = useState('white')
+    const [recColor, setRecColor] = useState('white')
+    const [soundSearchColor, setSoundSearchColor] = useState('white')
+    const [libraryColor, setLibraryColor] = useState('white')
+
     const toHomePage = () => {
         navigation.navigate('HomePage')
 
@@ -25,6 +31,12 @@ export default function NavBar() {
         setRecImg('favorite-outline')
         setSoundSearchImg('record-circle-outline')
         setLibraryImg('library-outline')
+
+        setHomeColor('#FF0054')
+        setSearchColor('white')
+        setRecColor('white')
+        setSoundSearchColor('white')
+        setLibraryColor('white')
     }
     const toLibraryPage = () => {
         navigation.navigate('LibraryPage')
@@ -34,6 +46,12 @@ export default function NavBar() {
         setRecImg('favorite-outline')
         setSoundSearchImg('record-circle-outline')
         setLibraryImg('library')
+
+        setHomeColor('white')
+        setSearchColor('white')
+        setRecColor('white')
+        setSoundSearchColor('white')
+        setLibraryColor('#FF0054')
     }
     const toSoundSearchPage = () => {
         navigation.navigate('SoundSearchPage')
@@ -43,6 +61,12 @@ export default function NavBar() {
         setRecImg('favorite-outline')
         setSoundSearchImg('record-circle')
         setLibraryImg('library-outline')
+
+        setHomeColor('white')
+        setSearchColor('white')
+        setRecColor('white')
+        setSoundSearchColor('#FF0054')
+        setLibraryColor('white')
     }
     const toRecPage = () => {
         navigation.navigate('RecPage')
@@ -52,6 +76,12 @@ export default function NavBar() {
         setRecImg('favorite')
         setSoundSearchImg('record-circle-outline')
         setLibraryImg('library-outline')
+
+        setHomeColor('white')
+        setSearchColor('white')
+        setRecColor('#FF0054')
+        setSoundSearchColor('white')
+        setLibraryColor('white')
     }
     const toSearchPage = () => {
         navigation.navigate('SearchPage')
@@ -61,6 +91,12 @@ export default function NavBar() {
         setRecImg('favorite-outline')
         setSoundSearchImg('record-circle-outline')
         setLibraryImg('library-outline')
+
+        setHomeColor('white')
+        setSearchColor('#FF0054')
+        setRecColor('white')
+        setSoundSearchColor('white')
+        setLibraryColor('white')
     }
 
     return (
@@ -71,7 +107,7 @@ export default function NavBar() {
                     onPress={toSoundSearchPage}
                 >
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <MaterialCommunityIcons name={soundSearchImg} size={24} color="white" />
+                        <MaterialCommunityIcons name={soundSearchImg} size={24} color={soundSearchColor} />
                         <Text style={[styles.text, { fontSize: 10 }]}>Find Song</Text>
                     </View>
                 </TouchableHighlight>
@@ -80,7 +116,7 @@ export default function NavBar() {
                     onPress={toRecPage}
                 >
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <MaterialIcons name={recImg} size={24} color="white" />
+                        <MaterialIcons name={recImg} size={24} color={recColor} />
                         <Text style={[styles.text, { fontSize: 10 }]}>Suggestion</Text>
                     </View>
 
@@ -90,7 +126,7 @@ export default function NavBar() {
                     onPress={toHomePage}
                 >
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Ionicons name={homeImg} size={24} color="white" />
+                        <Ionicons name={homeImg} size={24} color={homeColor} />
                         <Text style={[styles.text, { fontSize: 10 }]}>Home</Text>
                     </View>
                 </TouchableHighlight>
@@ -99,7 +135,7 @@ export default function NavBar() {
                     onPress={toLibraryPage}
                 >
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Ionicons name={libraryImg} size={24} color="white" />
+                        <Ionicons name={libraryImg} size={24} color={libraryColor} />
                         <Text style={[styles.text, { fontSize: 10 }]}>Library</Text>
                     </View>
                 </TouchableHighlight>
@@ -108,7 +144,7 @@ export default function NavBar() {
                     onPress={toSearchPage}
                 >
                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Ionicons name={searchImg} size={24} color="white" />
+                        <Ionicons name={searchImg} size={24} color={searchColor} />
                         <Text style={[styles.text, { fontSize: 10 }]}>Search</Text>
                     </View>
                 </TouchableHighlight>

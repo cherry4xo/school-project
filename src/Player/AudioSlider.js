@@ -232,7 +232,7 @@ export default class AudioSlider extends PureComponent {
                                     minimumValue={0}
                                     maximumValue={this.state.duration}
                                     step={1000}
-                                    minimumTrackTintColor="red"
+                                    minimumTrackTintColor="#FF0054"
                                     style={[styles.slider, { width: '90%' }]}
                                     value={this.state.currentTime}
                                     onValueChange={
@@ -301,7 +301,7 @@ export default class AudioSlider extends PureComponent {
                                 minimumValue={0}
                                 maximumValue={this.state.duration}
                                 value={this.state.currentTime}
-                                minimumTrackTintColor="red"
+                                minimumTrackTintColor="#FF0054"
                             />
                             <TouchableOpacity style={styles.content}
                                 onPress={this.expandPlayer}

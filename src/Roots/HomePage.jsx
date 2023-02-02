@@ -34,7 +34,7 @@ export default function HomePage({ navigation }) {
                     <Image source={avatar} style={styles.userAvatar} />
                     <View style={styles.greetingTextBlock}>
                         <Text style={styles.greetingText}>Good {time},</Text>
-                        <Text style={styles.greetingText}>Macheloger!</Text>
+                        <Text style={[styles.greetingText, { color: '#FF0054' }]}>Macheloger!</Text>
                     </View>
                 </View>
             </ImageBackground>

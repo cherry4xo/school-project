@@ -41,6 +41,7 @@ const DATA = [
 ];
 
 function AlbumsList() {
+
     return (
         < View style={[styles.recentlyAddedAlbums, { justifyContent: 'center' }]}>
             {
@@ -69,35 +70,35 @@ export default function LibraryStart({ navigation }) {
         <View style={{ backgroundColor: 'black' }}>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.line} />
-                <TouchableHighlight style={{ width: '100%' }} onPress={toUserSongs}>
+                <TouchableHighlight style={{ width: '80%' }} onPress={toUserSongs}>
                     <View style={[styles.menuItem]}>
                         <View style={{ width: 40, display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                            <Entypo name="folder-music" size={24} color="white" />
+                            <Entypo name="folder-music" size={24} color="#FF0054" />
                         </View>
                         <Text style={styles.text}>Songs</Text>
                     </View>
                 </TouchableHighlight>
                 <View style={styles.line} />
-                <TouchableHighlight style={{ width: '100%' }} onPress={toUserAlbums}>
+                <TouchableHighlight style={{ width: '80%' }} onPress={toUserAlbums}>
                     <View style={[styles.menuItem]}>
                         <View style={{ width: 40, display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                            <Ionicons name="albums" size={24} color="white" />
+                            <Ionicons name="albums" size={24} color="#FF0054" />
                         </View>
                         <Text style={styles.text}>Albums</Text>
                     </View>
                 </TouchableHighlight>
                 <View style={styles.line} />
-                <TouchableHighlight style={{ width: '100%' }} onPress={toUserPlaylists}>
+                <TouchableHighlight style={{ width: '80%' }} onPress={toUserPlaylists}>
                     <View style={[styles.menuItem]}>
                         <View style={{ width: 40, display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                            <MaterialCommunityIcons name="playlist-music" size={24} color="white" />
+                            <MaterialCommunityIcons name="playlist-music" size={24} color="#FF0054" />
                         </View>
                         <Text style={styles.text}>Playlists</Text>
                     </View>
                 </TouchableHighlight>
                 <View style={styles.line} />
 
-                <Text style={[styles.text, { fontSize: 28, marginVertical: 20 }]}>
+                <Text style={[styles.text, { fontSize: 28, marginVertical: 20, fontFamily: 'Nunito-Medium' }]}>
                     Recently Added:
                 </Text>
 
