@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableHighlight } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableHighlight } from 'react-native';
 
-export default function SearchPage({ navigation }) {
+export default function SearchPage(props) {
+
+    useEffect(() => {
+    }, [])
 
     const [value, setValue] = useState('')
 
@@ -17,7 +21,9 @@ export default function SearchPage({ navigation }) {
                 <TextInput
                     style={styles.input}
                     value={value}
-                    onChange={(event) => setValue(event.target.value)}
+                    onChangeText={(text) => {
+                        setValue(text)
+                    }}
                     placeholder='Search'
                     placeholderTextColor={'white'}
                     keyboardAppearance='dark'
@@ -53,7 +59,6 @@ export default function SearchPage({ navigation }) {
                         <Text style={[styles.searchTypeText, (searchType == 'artists') ?
                             { color: '#FF0054' } : { color: 'grey' }]}>Artists</Text>
                     </TouchableHighlight>
-
                 </View>
 
                 <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -61,7 +66,6 @@ export default function SearchPage({ navigation }) {
                         Search here!
                     </Text>
                 </View>
-
             </ScrollView >
         </View >
     )

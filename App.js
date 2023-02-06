@@ -25,6 +25,7 @@ import Track from './assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
 import trackIcon from './assets/img/avatar.jpg'
 
 import { setAudioModeAsync } from "expo-av/build/Audio";
+import { createStore } from 'redux';
 
 setAudioModeAsync({
   playsInSilentModeIOS: true,
@@ -143,7 +144,6 @@ export default function App() {
         <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchlandffffffffffffffdfdfsdgdsgsd'} audio={Track} />
       </SafeAreaView >
     </View>
-
   );
 }
 
