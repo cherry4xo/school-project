@@ -14,8 +14,9 @@ async def album_create(
     album: schemas.Album_create,
     tracks: List[int],
     artists: List[int],
+    genres: List[int]
 ):
-    return await service.album_s.create(album, artists, tracks)
+    return await service.album_s.create(album, artists, tracks, genres)
 
 @album_router.get('/{album_id}', response_model=schemas.Album_get)
 async def album_get(
@@ -23,7 +24,7 @@ async def album_get(
 ):
     return await service.album_s.get(id=album_id)
 
-@album_router.put('/{album_id}', response_model=schemas.Album_get)
+@album_router.put('/{album_id}', response_model=schemas.Album)
 async def album_update(
     album_id: int,
     album: schemas.Album_update

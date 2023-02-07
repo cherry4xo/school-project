@@ -25,8 +25,24 @@ class Album_base(PydanticModel):
         orm_mode=True
 
 
-class Album_in_db(Album_base):
+class Album(Album_base):
     id: int
+
+    class Config:
+        orm_mode=True
+
+
+class Album_get(BaseModel):
+    class Track(BaseModel):
+        id: int
+    class Artist(BaseModel):
+        id: int
+    class Genre(BaseModel):
+        id: int
+    album: Album
+    tracks: List[Track]
+    artists: List[Artist]
+    genres: List[Genre]
 
     class Config:
         orm_mode=True
@@ -42,13 +58,6 @@ class Album_create(Album_base):
 
 
 class Album_update(Album_base):
-    class Config:
-        orm_mode=True
-
-
-class Album_get(Album_base):
-    id: int
-
     class Config:
         orm_mode=True
 
@@ -77,14 +86,6 @@ class Create(Album_base):
         orm_mode=True'''
 
     pass
-
-
-class Album(Album_base):
-    id: int
-    name: str
-    libraries: List[getLibrary] = []
-    artists: List[getArtist] = []
-    genres: List[getGenre] = []
 
 
 class Status(Album_base):

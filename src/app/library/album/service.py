@@ -15,18 +15,31 @@ class Album_service(Service_base):
     get_schema = schemas.Album_get_schema
     create_m2m_schema = schemas.Album_adds
 
-    async def create(self, schema, artists: List[int], tracks:List[int], genre: int = None, **kwargs) -> Optional[schemas.Create]:
-        _genre = await models.Genre.get_or_none(id=genre)
-        obj = await self.model.create(**schema.dict(exclude_unset=True), genre=_genre, **kwargs)
+    async def create(self, schema, artists: List[int], tracks:List[int], genres: List[int] = None, **kwargs) -> Optional[schemas.Create]:
+        obj = await self.model.create(**schema.dict(exclude_unset=True), **kwargs)
         await obj.save()
-        _artists = await models.Artist.get_or_none(id__in=artists)
-        _tracks = await models.Track.get_or_none(id__in=tracks)
-        print(_tracks)
+        _genres = await models.Genre.filter(id__in=genres)
+        _artists = await models.Artist.filter(id__in=artists)
+        await models.Track.filter(id__in=tracks).update(album=obj)
+        _tracks = await models.Track.filter(id__in=tracks)
         if _artists:
             await obj.artists.add(*_artists)
-        if _tracks:
-            await _tracks.update(album=obj.id)
-        return await self.get_schema.from_tortoise_orm(obj)
+        if _genres:
+            await obj.genres.add(*_genres)
+        return {'album': await self.get_schema.from_tortoise_orm(obj),
+                'tracks': _tracks,
+                'artists': _artists,
+                'genres': _genres}
+
+    async def get(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        _genres = await models.Genre.filter(albums=obj.id)
+        _artists = await models.Artist.filter(albums=obj.id)
+        _tracks = await models.Track.filter(album=obj)
+        return {'album': await self.get_schema.from_tortoise_orm(obj),
+                'tracks': _tracks,
+                'artists': _artists,
+                'genres': _genres}
 
 
 album_s = Album_service()

@@ -55,8 +55,9 @@ class Track(Model):
                                                                             related_name='tracks',
                                                                             through='Tracks_playlists')
 
-    album: fields.ForeignKeyRelation['Album'] = fields.ForeignKeyField('models.Album',
-                                                                        related_name='Album_id')
+    album: fields.ForeignKeyNullableRelation['Album'] = fields.ForeignKeyField('models.Album',
+                                                                        related_name='Album_id',
+                                                                        null=True)
     genre: fields.ForeignKeyRelation['Genre'] = fields.ForeignKeyField('models.Genre',
                                                                         related_name='Album_id')
                                                                 
