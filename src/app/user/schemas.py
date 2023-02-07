@@ -16,7 +16,8 @@ getPlaylist = pydantic_model_creator(models.Playlist, exclude=('users', ))
 getUser = pydantic_model_creator(user_models.User)
 getComment = pydantic_model_creator(models.Comment)
 
-User_get_schema = pydantic_model_creator(models.User)
+User_get_schema = pydantic_model_creator(user_models.User)
+Comment_get_schema = pydantic_model_creator(models.Comment)
 
 
 class User_base(BaseModel):
@@ -27,11 +28,11 @@ class User_base(BaseModel):
         orm_mode=True
 
 
-class User_in_db(User_base):
+class User(User_base):
     id: int
     name: str
     email: str
-    library_id: int
+    registration_date: str
 
     class Config:
         orm_mode=True
@@ -40,21 +41,30 @@ class User_in_db(User_base):
 class User_create(User_base):
     name: str
     email: str
-    hashed_password: str
     registration_date: str
 
     class Config:
         orm_mode=True
 
 
-class User_get(User_base):
-    id: int
-    name: str
-    email: str
-    registration_date: str
+class User_get(BaseModel):
+    class Library(BaseModel):
+        id: int
+    user: User
+    library: Library
 
     class Config:
         orm_mode=True
+
+
+class User_get_registration(User_get):
+    class Genre(BaseModel):
+        id: int
+    class Artist(BaseModel):
+        id: int
+    genres: List[Genre] = []
+    artists: List[Artist] = []
+
 
 
 class Users_get(User_base):
@@ -93,6 +103,11 @@ class Comment_base(PydanticModel):
         orm_mode=True
 
 
+class Comment(Comment_base):
+    id: int
+    publishing_date: str
+
+
 class Comment_id_db(Comment_base):
     id: int
     user: int
@@ -103,9 +118,7 @@ class Comment_id_db(Comment_base):
 
 
 class Comment_create(Comment_base):
-    user: int
-    track: int
-
+    publishing_date: str
     class Config:
         orm_mode=True
 
@@ -117,11 +130,10 @@ class Comment_update(Comment_base):
         orm_mode=True
 
 
-class Comment_get(Comment_base):
-    id: int
-    text: str
+class Comment_get(BaseModel):
+    comment: Comment
     user: int
-    track: int
+    track: int  
 
     class Config:
         orm_mode=True

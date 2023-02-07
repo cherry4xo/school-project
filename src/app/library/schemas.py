@@ -12,6 +12,16 @@ getPlaylist = pydantic_model_creator(models.Playlist, exclude_readonly=True, exc
 getGenre = pydantic_model_creator(models.Genre, exclude_readonly=True, exclude=('libraries', ))
 getTrack = pydantic_model_creator(models.Track, exclude_readonly=True, exclude=('libraries', ))
 
+Library_get_schema = pydantic_model_creator(models.Library)
+
+
+class User_id(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode=True
+
+
 class Library_base(BaseModel):
     user_id: int
 
@@ -48,9 +58,9 @@ class Create(Library_base):
         orm_mode=True
 
 
-class Library_get(Library_base):
+class Library_get(BaseModel):
     id: int
-
+    user_id: User_id
     class Config:
         orm_mode=True
 

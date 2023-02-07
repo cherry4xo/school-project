@@ -8,7 +8,7 @@ from src.config import config
 
 
 app = FastAPI(
-    title="Ohuet'",
+    title="hey!",
     description='Author - cherry4xo. Yes, ama author of this shit',
     version='0.1.0'
 )
