@@ -9,13 +9,13 @@ from .. import service
 genre_router = APIRouter()
 
 
-@genre_router.post('/', response_model=schemas.Genre_get)
+@genre_router.post('/', response_model=schemas.Genre_get_creation)
 async def genre_create(
     genre: schemas.Genre_create,
 ):
     return await service.genre_s.create(genre)
 
-@genre_router.get('/{genre_id}', response_model=schemas.Genre)
+@genre_router.get('/{genre_id}', response_model=schemas.Genre_get)
 async def genre_get(
     genre_id: int
 ):

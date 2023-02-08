@@ -23,6 +23,13 @@ class Genre_base(PydanticModel):
         orm_mode=True
 
 
+class Genre(Genre_base):
+    description: str
+
+    class Config:
+        orm_mode=True
+
+
 class Genre_in_db(Genre_base):
     id: int
 
@@ -41,19 +48,29 @@ class Genre_update(Genre_base):
     description: str
 
 
-class Genre_get(Genre_base):
-    id: int
-    description: str
-    librarises: List[getLibrary] = []
+class Genre_get_creation(BaseModel):
+    genre: Genre
+
+    class Config:
+        orm_mode=True
 
 
-class Genre(Genre_base):
-    id: int
-    description: str
-    libraries: List[getLibrary] = []
-    artists: List[getArtist] = []
-    albums: List[getAlbum] = []
-    playlists: List[getPlaylist] = []
+class Genre_get(Genre_get_creation):
+    class Library(BaseModel):
+        id: int
+    class Artist(BaseModel):
+        id: int
+    class Album(BaseModel):
+        id: int
+    class Playlist(BaseModel):
+        id: int
+    class Track(BaseModel):
+        id: int
+    libraries: List[Library] = []
+    artists: List[Artist] = []
+    albums: List[Album] = []
+    playlists: List[Playlist] = []
+    tracks: List[Track] = []
 
     class Config:
         orm_mode=True
