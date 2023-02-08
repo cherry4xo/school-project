@@ -39,6 +39,7 @@ class User_service(Service_base):
         _lib = await models.Library.create(user_id=obj.id)
         _artists = await models.Artist.filter(id__in=artists)
         _genres = await models.Genre.filter(id__in=genres)
+        
         await _lib.artists.add(*_artists)
         await _lib.genres.add(*_genres)
         return {'user': await self.get_schema.from_tortoise_orm(obj),

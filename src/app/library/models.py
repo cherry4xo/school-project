@@ -74,7 +74,6 @@ class Playlist(Model):
                         not_null=True, 
                         auto_increment=True)
     name = fields.CharField(max_length=63,
-                            unique=True, 
                             not_null=True)
     description = fields.TextField()
     release_date = fields.CharField(max_length=30)

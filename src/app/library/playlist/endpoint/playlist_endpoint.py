@@ -9,7 +9,7 @@ from .. import service
 playlist_router = APIRouter()
 
 
-@playlist_router.post('/', response_model=schemas.Playlist_get_schema)
+@playlist_router.post('/', response_model=schemas.Playlist_get_creation)
 async def playlist_create(
     playlist: schemas.Playlist_create,
     tracks: List[int] = [],
@@ -24,7 +24,7 @@ async def playlist_get(
 ):
     return await service.playlist_s.get(id=playlist_id)
 
-@playlist_router.put('/update', response_model=schemas.Playlist_get)
+@playlist_router.put('/update', response_model=schemas.Playlist)
 async def playlist_update(
     playlist_id: int,
     playlist: schemas.Playlist_update
