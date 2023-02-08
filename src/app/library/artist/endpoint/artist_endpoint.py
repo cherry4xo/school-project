@@ -9,7 +9,7 @@ from .. import service
 artist_router = APIRouter()
 
 
-@artist_router.post('/', response_model=schemas.Artist_get_schema)
+@artist_router.post('/', response_model=schemas.Artist_get_creation)
 async def artist_create(
     artist: schemas.Artist_create,
     genres: List[int] = [],
@@ -24,7 +24,7 @@ async def artist_get(
 ):
     return await service.artist_s.get(id=artist_id)
 
-@artist_router.put('/update')
+@artist_router.put('/update', response_model=schemas.Artist)
 async def artist_update(
     artist_id: int,
     artist: schemas.Artist_update

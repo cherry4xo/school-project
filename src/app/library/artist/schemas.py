@@ -13,10 +13,6 @@ getAlbum = pydantic_model_creator(models.Album, exclude_readonly=True, exclude=(
 getArtist = pydantic_model_creator(models.Artist)
 
 Artist_get_schema = pydantic_model_creator(models.Artist)
-'''Artist_genres_get_schema = pydantic_model_creator(models.Artist.genres)
-Artist_albums_get_schema = pydantic_model_creator(models.Artist.albums)
-Artist_tracks_get_schema = pydantic_model_creator(models.Artist.tracks)
-'''
 
 class Artist_base(PydanticModel):
     name: str
@@ -26,7 +22,7 @@ class Artist_base(PydanticModel):
         orm_mode=True
 
 
-class Artist_in_db(Artist_base):
+class Artist(Artist_base):
     id: int
     picture_file_path: str
 
@@ -45,16 +41,6 @@ class Artist_delete(Artist_base):
     id: int
 
 
-class Create(Artist_base):
-    picture_file_path: str
-    genres: List[getGenre] = []
-    albums: List[getAlbum] = []
-    tracks: List[getTrack] = []
-
-    class Config:
-        orm_mode=True
-
-
 class Artist_update(Artist_base):
     picture_file_path: str
     
@@ -62,12 +48,27 @@ class Artist_update(Artist_base):
         orm_mode=True
 
 
-class Artist_get(Artist_base):
-    picture_file_path: str
-    '''libraries: List[int] = []
-    genres: List[int]
-    albums: List[int]
-    tracks: List[int]'''
+class Artist_get_creation(BaseModel):
+    class Genre(BaseModel):
+        id: int
+    class Album(BaseModel):
+        id: int
+    class Track(BaseModel):
+        id: int
+    artist: Artist
+    genres: List[Genre] = []
+    albums: List[Album] = []
+    tracks: List[Track] = []
+
+    class Config:
+        orm_mode=True
+
+
+class Artist_get(Artist_get_creation):
+    class Library(BaseModel):
+        id: int
+    
+    libraries: List[Library] = []
 
     class Config:
         orm_mode=True
@@ -78,17 +79,6 @@ class Artist_adds(Artist_base):
     genres: List[getGenre] = []
     albums: List[getAlbum] = []
     tracks: List[getTrack] = []
-
-    class Config:
-        orm_mode=True
-
-
-class Artist(Artist_base):
-    id: int
-    users: List[getLibrary] = []
-    tracks: List[getTrack] = []
-    genres: List[getGenre] = []
-    albums: List[getAlbum] = []
 
     class Config:
         orm_mode=True

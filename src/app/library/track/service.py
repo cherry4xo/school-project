@@ -15,7 +15,7 @@ class Track_service(Service_base):
     get_schema = schemas.Track_get_schema
     create_m2m_schema = schemas.Track_adds
 
-    async def create(self, schema, artists: List[int] = None, album: List[int] = None, genre: List[int] = None, **kwargs) -> Optional[schemas.Create]:
+    async def create(self, schema, artists: List[int] = None, album: List[int] = None, genre: List[int] = None, **kwargs) -> Optional[schemas.Track_create]:
         _album = await models.Album.get_or_none(id=album)
         _genre = await models.Genre.get_or_none(id=genre)
         if not _genre:
@@ -35,7 +35,7 @@ class Track_service(Service_base):
         obj = await self.model.update(schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         return await self.get_schema.from_tortoise_orm(obj)
 
-    async def get(self, **kwargs):
+    async def get(self, **kwargs) -> Optional[schemas.Track_get]:
         obj = await self.model.get(**kwargs)
         _artists = await models.Artist.filter(tracks=obj.id)
         _libraries = await models.Library.filter(tracks=obj.id)

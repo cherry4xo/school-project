@@ -43,17 +43,6 @@ class Track_delete(Track_base):
     id: int
 
 
-class Create(Track_base):
-    track_path: str
-    picture_file_path: str
-    duartion_s: str
-    album: Optional[getAlbum] = None
-    genre: Optional[getGenre] = None
-
-    class Config:
-        orm_mode=True
-
-
 class Track_update(Track_base):
     id: int
     track_path: str
@@ -112,14 +101,6 @@ class Track_get(Track_get_creation):
         orm_mode=True
 
 
-class Track_adds(Track_base):
-    libraries: List[getLibrary] = []
-    artists: List[getArtist] = []
-    playlists: List[getPlaylist] = []
-    album: Optional[getAlbum] = []
-    genre: Optional[getGenre] = []
-
-
 class Track_change_genre(Track_base):
     id: int
     genre: int
@@ -140,6 +121,24 @@ class Track(Track_base):
 
     class Config:
         orm_mode=True
+
+
+class Track_adds(BaseModel):
+    class Artist(BaseModel):
+        id: int
+    class Library(BaseModel):
+        id: int
+    class Playlist(BaseModel):
+        id: int
+    class Album(BaseModel):
+        id: int
+    class Genre(BaseModel):
+        id: int
+    artists: List[Artist] = []
+    libraries: List[Library] = []
+    playlists: List[Playlist] = []
+    album: Optional[Album] = []
+    genre: Genre
 
 
 class Status(Track_base):
