@@ -64,16 +64,49 @@ class Track_update(Track_base):
         orm_mode=True
 
 
-class Track_get(Track_base):
+class Track(Track_base):
     id: int
-    duration_s: str
+    duration_s: int
     track_file_path: str
     picture_file_path: str
-    libraries: List[getLibrary] = []
-    artists: List[getArtist] = []
-    playlists: List[getPlaylist] = []
-    #album: Optional[int] = None
-    #genre: Optional[int] = None
+
+    class Config:
+        orm_mode=True
+
+
+class Track_update_get(Track_base):
+    id: int
+    duration_s: int
+    track_file_path: str
+    picture_file_path: str
+
+    class Config:
+        orm_mode=True
+
+
+class Track_get_creation(BaseModel):
+    class Artist(BaseModel):
+        id: int
+    class Genre(BaseModel):
+        id: int
+    class Album(BaseModel):
+        id: int
+    track: Track
+    artists: List[Artist]
+    genre: Genre
+    album: Optional[Album] = None
+
+    class Config:
+        orm_mode=True
+
+
+class Track_get(Track_get_creation):
+    class Playlist(BaseModel):
+        id: int
+    class Library(BaseModel):
+        id: int
+    libraries: List[Library] = []
+    playlists: List[Playlist] = []
 
     class Config:
         orm_mode=True

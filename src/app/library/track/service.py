@@ -20,19 +20,32 @@ class Track_service(Service_base):
         _genre = await models.Genre.get_or_none(id=genre)
         if not _genre:
             raise HTTPException(status_code=404, detail=f'Genre {genre} does not exist')
-        '''if not _album:
-            raise HTTPException(status_code=404, detail=f'Album {album} does not exist')'''
         obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
         await obj.save()
         _artists = await models.Artist.filter(id__in=artists)
         if _artists:
             await obj.artists.add(*_artists)
-        return await self.get_schema.from_tortoise_orm(obj)
+        return {'track': await self.get_schema.from_tortoise_orm(obj),
+                'artists': _artists,
+                'genre': _genre,
+                'album': _album.id if _album else None}
 
     async def change_genre(self, schema, genre, **kwargs) -> Optional[schemas.Track_change_genre]:
         _genre = await models.get(id=genre)
         obj = await self.model.update(schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         return await self.get_schema.from_tortoise_orm(obj)
+
+    async def get(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        _artists = await models.Artist.filter(tracks=obj.id)
+        _libraries = await models.Library.filter(tracks=obj.id)
+        _playlists = await models.Playlist.filter(tracks=obj.id)
+        return {'track': await self.get_schema.from_tortoise_orm(obj),
+                'genre': {'id': obj.genre_id},
+                'album': {'id': obj.album_id},
+                'artists': _artists,
+                'libraries': _libraries,
+                'playlists': _playlists}
 
 
 track_s = Track_service()

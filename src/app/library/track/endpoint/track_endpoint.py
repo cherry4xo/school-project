@@ -10,12 +10,12 @@ from ... import models
 track_router = APIRouter()
 
 
-@track_router.post('/', response_model=schemas.Track_get)
+@track_router.post('/', response_model=schemas.Track_get_creation)
 async def track_create(
     track: schemas.Track_create,
-    artists: List[int] = [],
+    artists: List[int],
+    genre: int, 
     album: int = None,
-    genre: int = None 
 ):
     return await service.track_s.create(schema=track, artists=artists, album=album, genre=genre, duration_s=123)
 
@@ -25,7 +25,7 @@ async def track_get(
 ):
     return await service.track_s.get(id=track_id)
 
-@track_router.put('/', response_model=schemas.Track_get)
+@track_router.put('/', response_model=schemas.Track_update_get)
 async def track_update(
     track_id: int,
     track: schemas.Track_update
