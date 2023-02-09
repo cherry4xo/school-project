@@ -1,4 +1,4 @@
-import React, { createRef, PureComponent, useRef } from "react";
+import React, { PureComponent } from "react";
 import {
     View,
     StyleSheet,
@@ -18,11 +18,13 @@ import TextTicker from 'react-native-text-ticker'
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 
 import DigitalTimeString from "./DigitalTimeString";
+import { observer } from "mobx-react";
+import { PlayerQueue } from "../mobX/playerQUEUE";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class AudioSlider extends PureComponent {
+export default observer(class AudioSlider extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -32,7 +34,7 @@ export default class AudioSlider extends PureComponent {
             currentTime: 0, // miliseconds
             duration: 0,
             height: new Animated.Value(40),
-            songIsSaved: false
+            songIsSaved: false,
         }
 
         this.setSongIsSaved = this.setSongIsSaved.bind(this)
@@ -116,6 +118,36 @@ export default class AudioSlider extends PureComponent {
         this.setState({ playing: false }) // This is for the play-button to go to pause
     }
 
+    playNextSong = async () => {
+        await this.soundObject.unloadAsync()
+        PlayerQueue.increaseCurrentTrack()
+
+        this.soundObject = new Audio.Sound();
+        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
+        const status = await this.soundObject.getStatusAsync();
+        this.setState({ duration: status["durationMillis"] });
+
+        this.setCurrentTime(0)
+        this.mapAudioToCurrentTime()
+
+        this.play()
+    }
+
+    playPrevSong = async () => {
+        await this.soundObject.unloadAsync()
+        PlayerQueue.decreaseCurrentTrack()
+
+        this.soundObject = new Audio.Sound();
+        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
+        const status = await this.soundObject.getStatusAsync();
+        this.setState({ duration: status["durationMillis"] });
+
+        this.setCurrentTime(0)
+        this.mapAudioToCurrentTime()
+
+        this.play()
+    }
+
     runSlider = async () => {
         if (this.state.playing && this.state.duration > this.state.currentTime + 1000) {
             let prevTime = this.state.currentTime
@@ -123,9 +155,8 @@ export default class AudioSlider extends PureComponent {
         } else {
             //on end of the song function
             if (this.state.playing) {
-                this.onPressPlayPause()
-                this.setCurrentTime(0)
-                this.mapAudioToCurrentTime()
+
+                this.playNextSong()
                 // console.log('end of the song')
             }
         }
@@ -140,7 +171,7 @@ export default class AudioSlider extends PureComponent {
 
     async componentDidMount() {
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(this.props.audio);
+        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -235,10 +266,10 @@ export default class AudioSlider extends PureComponent {
                                     minimumTrackTintColor="#FF0054"
                                     style={[styles.slider, { width: '90%' }]}
                                     value={this.state.currentTime}
-                                    onValueChange={
-                                        currentTime => {
-                                            this.setState({ currentTime })
-                                            this.mapAudioToCurrentTime()
+                                    onSlidingComplete={
+                                        time => {
+                                            this.setCurrentTime(time)
+                                            this.soundObject.setPositionAsync(time)
                                         }
                                     }
                                 />
@@ -257,7 +288,7 @@ export default class AudioSlider extends PureComponent {
                                 <View style={styles.expandedControlBtns}>
                                     <TouchableOpacity
                                         style={styles.playBTN}
-                                        onPress={() => { }}
+                                        onPress={() => { this.playPrevSong() }}
                                     >
                                         <AntDesign name="banckward" size={40} color="white" />
                                     </TouchableOpacity>
@@ -275,7 +306,7 @@ export default class AudioSlider extends PureComponent {
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={styles.playBTN}
-                                        onPress={() => { }}
+                                        onPress={() => { this.playNextSong() }}
                                     >
                                         <AntDesign name="forward" size={40} color="white" />
                                     </TouchableOpacity>
@@ -367,7 +398,7 @@ export default class AudioSlider extends PureComponent {
         );
     };
 
-}
+})
 
 const styles = StyleSheet.create({
     player: {

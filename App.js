@@ -21,17 +21,19 @@ import SearchPage from './src/Roots/SearchPage'
 import SoundSearchPage from './src/Roots/SoundSearchPage'
 
 import Player from './src/Player/AudioSlider'
-import Track from './assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3'
-import trackIcon from './assets/img/avatar.jpg'
 
 import { setAudioModeAsync } from "expo-av/build/Audio";
-import { createStore } from 'redux';
+import { PlayerQueue } from './src/mobX/playerQUEUE';
+import { observer } from 'mobx-react';
 
 setAudioModeAsync({
   playsInSilentModeIOS: true,
 })
 
-export default function App() {
+export default observer(function App() {
+
+  useEffect(() => {
+  })
 
   let [fontsLoaded] = useFonts({
     'Nunito-Regular': require('./assets/fonts/Nunito/Nunito-Regular.ttf'),
@@ -43,7 +45,7 @@ export default function App() {
   if (!fontsLoaded) return <AppLoading />
 
   return (
-    <View>
+    < View >
       <SafeAreaView style={styles.container}>
 
         <NavigationContainer>
@@ -141,12 +143,17 @@ export default function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-        <Player trackIcon={trackIcon} trackAuthor={'Rammstein'} trackName={'Deutchlandffffffffffffffdfdfsdgdsgsd'} audio={Track} />
+        <Player
+          track={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route}
+          trackIcon={require('./assets/img/avatar.jpg')}
+          trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
+          trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
+        />
       </SafeAreaView >
-    </View>
+    </View >
   );
 }
-
+)
 const styles = StyleSheet.create({
   container: {
     width: '100%',
