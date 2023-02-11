@@ -65,7 +65,6 @@ class User_service(Service_base):
                 'library': _lib}
 
 
-
 class Comment_service(Service_base):
     model = models.Comment
     create_schema = schemas.Comment_create

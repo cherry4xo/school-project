@@ -9,12 +9,6 @@ from .. import service
 library_router = APIRouter()
 
 
-@library_router.post('/', status_code=204)
-async def library_create(
-    user_id: int
-):
-    return await service.library_s.create(user_id)
-
 @library_router.get('/{library_id}', response_model=schemas.Library_get)
 async def library_get(
     library_id: int,

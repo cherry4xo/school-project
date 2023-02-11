@@ -7,6 +7,29 @@ from .library.track.endpoint.track_endpoint import track_router
 from .library.endpoint.library_endpoint import library_router
 from .user.endpoint.user_endpoint import user_router, comment_router
 
+from . import router_schemas
+from . import router_service
+
+
+page_router = APIRouter(tags=['page'])
+
+
+@page_router.get('/main', response_model=router_schemas.Main_page_get)
+async def get_main_page(
+    user_id: int
+):
+    return await router_service.main_s.get_main_page(id=user_id)
+
+@page_router.get('/library', response_model=router_schemas.Library_page_get)
+async def get_library_page(
+    library_id: int
+):
+    return await router_service.main_s.get_library_page(id=library_id)
+
+@page_router.get('/search', response_model=router_schemas.Search_page_get)
+async def get_search_page():
+    pass
+
 
 api_router = APIRouter()
 
@@ -18,3 +41,4 @@ api_router.include_router(track_router, prefix='/track', tags=['track'])
 api_router.include_router(library_router, prefix='/library', tags=['library'])
 api_router.include_router(user_router, prefix='/user', tags=['user'])
 api_router.include_router(comment_router, prefix='/comment', tags=['comment'])
+api_router.include_router(page_router)
