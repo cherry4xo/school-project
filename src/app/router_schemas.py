@@ -128,7 +128,7 @@ class Search_page_get(BaseModel):
             name: str
             picture_file_path: str
         artist_data: Artist_data
-        genre: Genre
+        genres: List[Genre]
     
     tracks: List[Track]
     albums: List[Album]
