@@ -28,7 +28,7 @@ async def get_library_page(
 
 @page_router.get('/search', response_model=router_schemas.Search_page_get)
 async def get_search_page():
-    pass
+    return await router_service.main_s.get_search_page()
 
 
 api_router = APIRouter()
