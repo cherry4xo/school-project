@@ -30,6 +30,29 @@ async def get_library_page(
 async def get_search_page():
     return await router_service.main_s.get_search_page()
 
+@page_router.get('/page/track/{track_id}', response_model=router_schemas.Track_page_get)
+async def get_track_page(
+    track_id: int
+):
+    return await router_service.main_s.get_track_page(id=track_id)
+
+@page_router.get('/page/album/{album_id}', response_model=router_schemas.Album_page_get)
+async def get_album_page(
+    album_id: int
+):
+    return await router_service.main_s.get_album_page(id=album_id)
+
+@page_router.get('/page/playlist/{playlist_id}', response_model=router_schemas.Playlist_page_get)
+async def get_playlist_page(
+    playlist_id: int
+):
+    return await router_service.main_s.get_playlist_page(id=playlist_id)
+
+@page_router.get('/page/artist/{artist_id}', response_model=router_schemas.Artist_page_get)
+async def get_artist_page(
+    artist_id: int
+):
+    return await router_service.main_s.get_artist_page(id=artist_id)
 
 api_router = APIRouter()
 

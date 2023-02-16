@@ -138,6 +138,133 @@ class Search_page_get(BaseModel):
         orm_mode=True
 
 
+class Track_page_get(BaseModel):
+    class Artist(BaseModel):
+        id: int
+        name: str
+    class Track_data(BaseModel):
+        id: int
+        name: str
+        picture_file_path: str
+        track_file_path: str
+        duration_s: int
+    track_data: Track_data
+    artists: List[Artist]
+
+    class Config:
+        orm_mode=True
+
+
+class Album_page_get(BaseModel):
+    class Album_data(BaseModel):
+        id: int
+        name: str
+        picture_file_path: str
+    class Artist(BaseModel):
+        id: int
+        name: str
+    class Track(BaseModel):
+        class Artist(BaseModel):
+            id: int
+            name: str
+        class Track_data(BaseModel):
+            id: int
+            name: str
+            picture_file_path: str
+            track_file_path: str
+            duration_s: int
+        track_data: Track_data
+        artists: List[Artist]
+    album_data: Album_data
+    artists: List[Artist]
+    tracks: List[Track]
+
+    class Config:
+        orm_mode=True
+
+
+class Playlist_page_get(BaseModel):
+    class Playlist_data(BaseModel):
+        name: str
+        picture_file_path: str
+        description: str
+    class Creator(BaseModel):
+        id: int
+        name: str
+        picture_file_path: str
+    class Track(BaseModel):
+        class Artist(BaseModel):
+            id: int
+            name: str
+        class Track_data(BaseModel):
+            id: int
+            name: str
+            picture_file_path: str
+            track_file_path: str
+            duration_s: int
+        track_data: Track_data
+        artists: List[Artist]
+    playlist_data: Playlist_data
+    tracks: List[Track]
+    creator: Creator
+
+    class Config:
+        orm_mode=True
+
+
+class Artist_page_get(BaseModel):
+    class Artist_data(BaseModel):
+        id: int
+        name: str
+        registration_date: str
+        picture_file_path: str
+    class Followers_count(BaseModel):
+        count: str
+    class Track(BaseModel):
+        class Artist(BaseModel):
+            id: int
+            name: str
+        class Track_data(BaseModel):
+            id: int
+            name: str
+            picture_file_path: str
+            track_file_path: str
+            duration_s: int
+        track_data: Track_data
+        artists: List[Artist]
+    class Album(BaseModel):
+        class Album_data(BaseModel):
+            id: int
+            name: str
+            picture_file_path: str
+        class Artist(BaseModel):
+            id: int
+            name: str
+        class Track(BaseModel):
+            class Artist(BaseModel):
+                id: int
+                name: str
+            class Track_data(BaseModel):
+                id: int
+                name: str
+                picture_file_path: str
+                track_file_path: str
+                duration_s: int
+            track_data: Track_data
+            artists: List[Artist]
+        album_data: Album_data
+        artists: List[Artist]
+        tracks: List[Track]
+
+    artist_data: Artist_data
+    followers_count: Followers_count
+    tracks: List[Track]
+    albums: List[Album]
+
+    class Config:
+        orm_mode=True
+
+
 class Status(BaseModel):
     message: str
 

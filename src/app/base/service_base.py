@@ -1,8 +1,9 @@
-from typing import TypeVar, Type, Optional
+from typing import TypeVar, Type, Optional, List
 
 from fastapi import HTTPException
 from pydantic import BaseModel
 from tortoise import models
+from tortoise.models import Model
 
 
 Model_type = TypeVar('Model_type', bound=models.Model)
@@ -53,3 +54,17 @@ class Service_base:
         _adds = await models.Adds_model.filter(id=args)
         await obj.adds.add(*_adds)
         return await self.get_schema.from_tortoise_orm(obj)
+
+    async def add_m2m_fields(self, obj_id: int, adds_ids: List[int]):
+        obj = await self.model.get_or_none(id=obj_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _adds_list = await models.Track.filter(id__in=adds_ids)
+        await obj.tracks.add(*_adds_list)
+
+    async def remove_m2m_fields(self, adds_model: Model, parts_model, obj_id: int, adds_ids: List[int]):
+        obj = await self.model.get_or_none(id=obj_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _adds_list = await adds_model.filter(id__in=adds_ids)
+        await obj.parts_model.remove(*_adds_list)

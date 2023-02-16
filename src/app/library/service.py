@@ -45,5 +45,76 @@ class Library_service(Service_base):
                 'genres': _genres,
                 'playlists': _playlists}
 
+    async def add_tracks(self, library_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _tracks_list = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.add(*_tracks_list)
+        
+    async def delete_tracks(self, library_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _tracks_list = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.remove(*_tracks_list)
+
+    async def add_artists(self, library_id: int, artists_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _artists_list = await models.Artist.filter(id__in=artists_id)
+        await obj.artists.add(*_artists_list)
+        
+    async def delete_artists(self, library_id: int, artists_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _artists_list = await models.Artist.filter(id__in=artists_id)
+        await obj.artists.remove(*_artists_list)
+
+    async def add_playlists(self, library_id: int, playlists_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _playlists_list = await models.Playlist.filter(id__in=playlists_id)
+        await obj.playlists.add(*_playlists_list)
+        
+    async def delete_playlists(self, library_id: int, playlists_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _playlists_list = await models.Playlist.filter(id__in=playlists_id)
+        await obj.playlists.remove(*_playlists_list)
+
+    async def add_albums(self, library_id: int, albums_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _albums_list = await models.Album.filter(id__in=albums_id)
+        await obj.albums.add(*_albums_list)
+        
+    async def delete_albums(self, library_id: int, albums_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _albums_list = await models.Album.filter(id__in=albums_id)
+        await obj.albums.remove(*_albums_list)
+
+    async def add_genres(self, library_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _genres_list = await models.Genre.filter(id__in=genres_id)
+        await obj.genres.add(*_genres_list)
+        
+    async def delete_genres(self, library_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=library_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        _genres_list = await models.Genre.filter(id__in=genres_id)
+        await obj.genres.remove(*_genres_list)
+
+    
 
 library_s = Library_service()
