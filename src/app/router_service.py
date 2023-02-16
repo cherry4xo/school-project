@@ -238,6 +238,7 @@ class Main_service(Service_base):
                 'followers_count': {'count': _followers_count},
                 'tracks': artist_tracks_response,
                 'albums': artist_albums_response}
-        
+    
+    
 
 main_s = Main_service()
