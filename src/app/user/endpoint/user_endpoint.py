@@ -1,24 +1,45 @@
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, Request, status
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError, JSONResponse
 from .. import schemas
 from .. import models
 from .. import service
 
 
-
 user_router = APIRouter()
 comment_router = APIRouter()
+templates = Jinja2Templates(directory='templates')
 
 
-@user_router.post('/', response_model=schemas.User_get_registration)
+def artists_checker(artists: List[str] = Form(...)):
+    if len(artists) == 1:
+        artists = [item.strip() for item in artists[0].split(',')]
+
+    return [artist for artist in artists]
+
+def genres_checker(genres: List[str] = Form(...)):
+    if len(genres) == 1:
+        genres = [item.strip() for item in genres[0].split(',')]
+
+    return [genre for genre in genres]
+
+
+@user_router.post('/create', status_code=status.HTTP_200_OK)
 async def user_create(
-    user: schemas.User_create, 
-    password: str,
-    genres: List[int],
-    artists: List[int] 
+    user: schemas.User_create_request = Depends(schemas.User_create_request.as_form),
+    artists: List[int] = Depends(artists_checker),
+    genres: List[int] = Depends(genres_checker),
+    picture_file: UploadFile = File(...)
 ):
-    return await service.user_s.create(user, password, genres, artists)
+    return await service.user_s.create(user, artists, genres, picture_file)
+
+@user_router.post('/files/')
+async def upload_file(
+    file: UploadFile = File(...)
+):
+    return await service.user_s.upload_file(1, file)
 
 @user_router.get('/{user_id}', response_model=schemas.User_get)
 async def user_get(
@@ -53,7 +74,7 @@ async def user_get_obj(
 ):
     return await service.user_s.get_obj(id=user_id)'''
 
-@comment_router.post('/ ', response_model=schemas.Comment_get)
+@comment_router.post('/', response_model=schemas.Comment_get)
 async def comment_create(
     comment: schemas.Comment_create,
     user: int,

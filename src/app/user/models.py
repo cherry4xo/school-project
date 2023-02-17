@@ -16,7 +16,7 @@ class User(Model):
     hashed_password = fields.CharField(max_length=1000)
     registration_date = fields.CharField(max_length=30)
 
-    picture_file_path = fields.CharField(max_length=1000)
+    picture_file_path = fields.CharField(max_length=1000, default='data/default_image.png')
 
     class PydanticMeta:
         exclude = ['hashed_password']

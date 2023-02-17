@@ -1,9 +1,15 @@
+import shutil
+import os
+
 from typing import Optional, List
 from hashlib import pbkdf2_hmac
 from random import randint
 
-from fastapi import HTTPException
+from fastapi import HTTPException, File, UploadFile, Depends, Form
+from fastapi.encoders import jsonable_encoder
+from pydantic import ValidationError
 from tortoise.expressions import Q
+from fastapi.concurrency import run_in_threadpool
 
 from ..base.service_base import Service_base
 from ..library import models
@@ -33,19 +39,52 @@ class User_service(Service_base):
                 return True
         return False
 
-    async def create(self, schema, password: str, genres: List[int], artists: List[int], **kwargs) -> Optional[schemas.Create]:
-        obj = await self.model.create(**schema.dict(exclude_unset=True), hashed_password=self._get_password_hash_hex(password), **kwargs)
+    async def upload_file(self, user_id: int, file: UploadFile = File(...)):
+        try:
+            if file.content_type != 'image/jpeg':
+                raise ValueError
+            file_directory = f'data/user/{user_id}'
+            if not os.path.exists(file_directory):
+                os.makedirs(file_directory)
+            f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
+            await run_in_threadpool(shutil.copyfileobj, file.file, f)
+        except Exception():
+            return {'file_path': 'NULL'}
+        finally:
+            if 'f' in locals(): await run_in_threadpool(f.close)
+            await file.close()
+
+        return {'file_path': f'{file_directory}/{file.filename}'}
+
+    async def create(self, 
+                    schema: schemas.User_create_request = Depends(), 
+                    artists: List[int] = Form(...),
+                    genres: List[int] = Form(...),
+                    picture_file: UploadFile = File(...),
+                    **kwargs) -> Optional[schemas.Create]:
+        obj = await self.model.create(**schema.user.dict(exclude_unset=True), hashed_password=self._get_password_hash_hex(schema.password), **kwargs)
         await obj.save()
+        picture_file_path = await self.upload_file(obj.id, picture_file)
+        if picture_file_path['file_path'] != 'NULL':
+            obj.picture_file_path = picture_file_path['file_path']
+        else:
+            raise Exception
         _lib = await models.Library.create(user_id=obj.id)
         _artists = await models.Artist.filter(id__in=artists)
         _genres = await models.Genre.filter(id__in=genres)
         
         await _lib.artists.add(*_artists)
         await _lib.genres.add(*_genres)
-        return {'user': await self.get_schema.from_tortoise_orm(obj),
-                'genres': _genres,
-                'artists': _artists,
-                'library': _lib}
+
+        json_response = {'user': await self.get_schema.from_tortoise_orm(obj),
+                        'genres': _genres,
+                        'artists': _artists,
+                        'library': _lib}
+
+        return {
+            "JSON Payload ": json_response,
+            "filenames": picture_file_path['file_path']
+        }
 
     async def change_password(self, old_password: str, new_password: str, **kwargs) -> Optional[schemas.User_change_password]:
         _old_password_model_get = await self.model.filter(**kwargs).values('hashed_password')

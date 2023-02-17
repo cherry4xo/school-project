@@ -1,8 +1,10 @@
+import base64
 from typing import Optional, List
 
 #from tortoise.query_utils import Q
 from pydantic import BaseModel
 from tortoise.contrib.pydantic import PydanticModel, PydanticListModel, pydantic_model_creator
+from fastapi import Form, File, UploadFile, Depends
 from . import models as user_models
 from ..library import models 
 
@@ -22,7 +24,6 @@ Comment_get_schema = pydantic_model_creator(models.Comment)
 
 class User_base(BaseModel):
     login: str
-    picture_file_path: str
 
     class Config:
         orm_mode=True
@@ -38,10 +39,36 @@ class User(User_base):
         orm_mode=True
 
 
-class User_create(User_base):
+class User_create(BaseModel):
+    login: str
     name: str
     email: str
     registration_date: str
+
+    @classmethod
+    def as_form(cls,
+                login: str = Form(...),
+                name: str = Form(...),
+                email: str = Form(...),
+                registration_date: str = Form(...)
+    ):
+        return cls(login=login, name=name, email=email, registration_date=registration_date)
+
+    class Config:
+        orm_mode=True
+
+
+class User_create_request(BaseModel):
+    user: User_create
+    password: str
+
+    @classmethod
+    def as_form(
+        cls,
+        user: User_create = Depends(User_create.as_form),
+        password: str = Form(...),
+    ):
+        return cls(user=user, password=password)
 
     class Config:
         orm_mode=True
@@ -74,8 +101,6 @@ class Users_get(User_base):
 class User_update(User_base):
     name: str
     email: str
-    picture_file_path: str
-
 
     class Config:
         orm_mode=True
