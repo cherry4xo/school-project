@@ -66,6 +66,7 @@ class User_service(Service_base):
         await obj.save()
         picture_file_path = await self.upload_file(obj.id, picture_file)
         if picture_file_path['file_path'] != 'NULL':
+            await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
         else:
             raise Exception

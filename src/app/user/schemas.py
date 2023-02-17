@@ -18,7 +18,7 @@ getPlaylist = pydantic_model_creator(models.Playlist, exclude=('users', ))
 getUser = pydantic_model_creator(user_models.User)
 getComment = pydantic_model_creator(models.Comment)
 
-User_get_schema = pydantic_model_creator(user_models.User)
+User_get_schema = pydantic_model_creator(user_models.User, exclude=['picture_file_path'])
 Comment_get_schema = pydantic_model_creator(models.Comment)
 
 
