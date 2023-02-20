@@ -34,9 +34,24 @@ class User(User_base):
     name: str
     email: str
     registration_date: str
+    picture_file_path: str
 
     class Config:
         orm_mode=True
+
+
+class User_change_picture(BaseModel):
+    id: int
+
+    @classmethod
+    def as_form(cls,
+                id: int = Form(...)
+    ):
+        return cls(id=id)    
+
+
+class User_change_picture_response(BaseModel):
+    picture_file_path: str
 
 
 class User_create(BaseModel):
@@ -98,7 +113,7 @@ class Users_get(User_base):
     id: list[int]
 
 
-class User_update(User_base):
+class User_update(BaseModel):
     name: str
     email: str
 

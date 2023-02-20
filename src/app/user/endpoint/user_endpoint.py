@@ -35,11 +35,12 @@ async def user_create(
 ):
     return await service.user_s.create(user, artists, genres, picture_file)
 
-@user_router.post('/files/')
-async def upload_file(
-    file: UploadFile = File(...)
+@user_router.put('/delete/data/{user_id}', response_model=schemas.User_change_picture_response)
+async def user_change_picture(
+    user_id: int = Depends(schemas.User_change_picture.as_form),
+    new_picture_file: UploadFile = File(...),
 ):
-    return await service.user_s.upload_file(1, file)
+    return await service.user_s.change_picture(user_id, new_picture_file)
 
 @user_router.get('/{user_id}', response_model=schemas.User_get)
 async def user_get(
