@@ -91,13 +91,21 @@ class User_service(Service_base):
         obj = await self.model.get(id=user_id.id)
         picture_file_path = await self.upload_file(obj.id, new_picture_file)
         if picture_file_path['file_path'] != 'NULL':
-            os.remove(obj.picture_file_path)
+            if obj.picture_file_path != 'data/default_image.png':
+                os.remove(obj.picture_file_path)
             await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
         else:
             raise Exception
 
         return {'picture_file_path': obj.picture_file_path}
+
+    async def delete_picture(self, user_id: schemas.User_change_picture):
+        obj = await self.model.get(id=user_id.id)
+        if obj.picture_file_path != 'data/default_image.png':
+            os.remove(obj.picture_file_path)
+        await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
+        obj.picture_file_path = 'data/default_image.png'
 
     async def change_password(self, old_password: str, new_password: str, **kwargs) -> Optional[schemas.User_change_password]:
         _old_password_model_get = await self.model.filter(**kwargs).values('hashed_password')
