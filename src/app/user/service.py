@@ -1,5 +1,6 @@
 import shutil
 import os
+import uuid
 
 from typing import Optional, List
 from hashlib import pbkdf2_hmac
@@ -39,23 +40,6 @@ class User_service(Service_base):
                 return True
         return False
 
-    async def upload_file(self, user_id: int, file: UploadFile = File(...)):
-        try:
-            if file.content_type != 'image/jpeg':
-                raise ValueError
-            file_directory = f'data/user/{user_id}'
-            if not os.path.exists(file_directory):
-                os.makedirs(file_directory)
-            f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
-            await run_in_threadpool(shutil.copyfileobj, file.file, f)
-        except Exception():
-            return {'file_path': 'NULL'}
-        finally:
-            if 'f' in locals(): await run_in_threadpool(f.close)
-            await file.close()
-
-        return {'file_path': f'{file_directory}/{file.filename}'}
-
     async def create(self, 
                     schema: schemas.User_create_request = Depends(), 
                     artists: List[int] = Form(...),
@@ -64,12 +48,12 @@ class User_service(Service_base):
                     **kwargs) -> Optional[schemas.Create]:
         obj = await self.model.create(**schema.user.dict(exclude_unset=True), hashed_password=self._get_password_hash_hex(schema.password), **kwargs)
         await obj.save()
-        picture_file_path = await self.upload_file(obj.id, picture_file)
+        
+        picture_file_path = await self.upload_file('user', picture_file)
         if picture_file_path['file_path'] != 'NULL':
             await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
-        else:
-            raise Exception
+
         _lib = await models.Library.create(user_id=obj.id)
         _artists = await models.Artist.filter(id__in=artists)
         _genres = await models.Genre.filter(id__in=genres)

@@ -1,6 +1,10 @@
+import os
+import uuid
+import shutil
 from typing import TypeVar, Type, Optional, List
 
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile, File
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 from tortoise import models
 from tortoise.models import Model
@@ -21,6 +25,24 @@ class Service_base:
     update_schema: Type[Update_schema_type]
     query_scheme: Type[Query_schema_type]
     get_schema: Type[Get_schema_type]
+
+    async def upload_file(self, dir: str, file: UploadFile = File(...)):
+        try:
+            if file.content_type != 'image/jpeg':
+                raise ValueError
+            file_directory = f'data/{dir}/'
+            if not os.path.exists(file_directory):
+                os.makedirs(file_directory)
+            f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
+            f.filename = str(uuid.uuid4())
+            await run_in_threadpool(shutil.copyfileobj, file.file, f)
+        except Exception():
+            return {'file_path': 'NULL'}
+        finally:
+            if 'f' in locals(): await run_in_threadpool(f.close)
+            await file.close()
+
+        return {'file_path': f'{file_directory}/{file.filename}'}
 
     async def create(self, schema, *args, **kwargs) -> Optional[Create_schema_type]:
         obj = await self.model.create(**schema.dict(exclude_unset=True), **kwargs)

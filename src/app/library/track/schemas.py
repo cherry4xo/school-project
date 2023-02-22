@@ -3,6 +3,7 @@ from typing import Optional, List
 #from tortoise.query_utils import Query
 from pydantic import BaseModel
 from tortoise.contrib.pydantic import PydanticModel, PydanticListModel, pydantic_model_creator
+from fastapi import Depends, Form, File, UploadFile
 from .. import models
 
 
@@ -33,7 +34,6 @@ class Track_in_db(Track_base):
 
 class Track_create(Track_base):
     track_file_path: str
-    picture_file_path: Optional[str] = None
 
     class Config:
         orm_mode=True
@@ -53,11 +53,39 @@ class Track_update(Track_base):
         orm_mode=True
 
 
-class Track(Track_base):
+class Track_create(BaseModel):
     id: int
+    name: str
+    duration_s: int
+
+    @classmethod
+    def as_form(cls, 
+                id: int = Form(...), 
+                name: str = Form(...),
+                duration_s: int = Form(...)
+    ):
+        return cls(id=id, name=name, duration_s=duration_s)   
+
+    class Config:
+        orm_mode=True
+
+
+class Track(BaseModel):
+    id: int
+    name: str
     duration_s: int
     track_file_path: str
     picture_file_path: str
+
+    @classmethod
+    def as_form(cls, 
+                id: int = Form(...), 
+                name: str = Form(...),
+                duration_s: int = Form(...),
+                track_file_path: str = Form(...), 
+                picture_file_path: str = Form(...)
+    ):
+        return cls(id=id, name=name, duration_s=duration_s, track_file_path=track_file_path, picture_file_path=picture_file_path)   
 
     class Config:
         orm_mode=True
@@ -76,14 +104,28 @@ class Track_update_get(Track_base):
 class Track_get_creation(BaseModel):
     class Artist(BaseModel):
         id: int
+        @classmethod
+        def as_form(cls, id: int = Form(...)): return cls(id=id)
     class Genre(BaseModel):
         id: int
+        @classmethod
+        def as_form(cls, id: int = Form(...)): return cls(id=id)
     class Album(BaseModel):
         id: int
+        @classmethod
+        def as_form(cls, id: int = Form(...)): return cls(id=id)
     track: Track
     artists: List[Artist]
     genre: Genre
     album: Optional[Album] = None
+
+    @classmethod
+    def as_form(cls, 
+                track: Track = Depends(Track.as_form),
+                artists: List[Artist] = Depends(Form(List[Artist])),
+                genre: Genre = Depends(Genre.as_form),
+                album: Album = Depends(Album.as_form)):
+        return cls(track=track, artists=artists, genre=genre, album=album)
 
     class Config:
         orm_mode=True

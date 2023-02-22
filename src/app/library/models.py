@@ -40,12 +40,12 @@ class Track(Model):
                         auto_increment=True)
     name = fields.CharField(max_length=255, 
                             not_null=True)
-    duration_s = fields.IntField()
+    duration_s = fields.IntField(default=None)
     track_file_path = fields.CharField(max_length=1000,
                                         not_null=True)
 
     picture_file_path = fields.CharField(max_length=1000,
-                                        not_null=True)
+                                        not_null=True, default='data/default_image.png')
 
     libraries: fields.ManyToManyRelation['Library']
     artists: fields.ManyToManyRelation['Artist'] = fields.ManyToManyField('models.Artist',

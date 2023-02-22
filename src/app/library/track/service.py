@@ -1,6 +1,8 @@
+import librosa
+
 from typing import Optional, List
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Form, Depends, File, UploadFile
 #from tortoise.query_utils import Query
 
 from ...base.service_base import Service_base
@@ -15,13 +17,32 @@ class Track_service(Service_base):
     get_schema = schemas.Track_get_schema
     create_m2m_schema = schemas.Track_adds
 
-    async def create(self, schema, artists: List[int] = None, album: List[int] = None, genre: List[int] = None, **kwargs) -> Optional[schemas.Track_create]:
+    async def create(self, 
+                    schema: schemas.Track_create = Depends(), 
+                    artists: List[int] = Form(...), 
+                    album: int = Form(...), 
+                    genre: int = Form(...),
+                    picture_file: UploadFile = File(...),
+                    track_file: UploadFile = File(...),
+                    **kwargs) -> Optional[schemas.Track_create]:
         _album = await models.Album.get_or_none(id=album)
         _genre = await models.Genre.get_or_none(id=genre)
         if not _genre:
             raise HTTPException(status_code=404, detail=f'Genre {genre} does not exist')
         obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
         await obj.save()
+        
+        picture_file_path = self.upload_file('track/picture')
+        if picture_file_path['file_path'] != 'NULL':
+            await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
+            obj.picture_file_path = picture_file_path['file_path']
+        
+        track_file_path = self.upload_file('track/track_file')
+        if track_file_path['file_path'] != 'NULL':
+            track_duration_s = round(librosa.get_duration(path=track_file_path['file_path']))
+            await self.model.filter(id=obj.id).update(duration_s=track_duration_s, track_file_path=track_file_path['file_path'])
+            obj.track_file_path = track_file_path['file_path']
+
         _artists = await models.Artist.filter(id__in=artists)
         if _artists:
             await obj.artists.add(*_artists)
