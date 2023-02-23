@@ -1,4 +1,5 @@
 import librosa
+import os
 
 from typing import Optional, List
 
@@ -29,18 +30,23 @@ class Track_service(Service_base):
         _genre = await models.Genre.get_or_none(id=genre)
         if not _genre:
             raise HTTPException(status_code=404, detail=f'Genre {genre} does not exist')
-        obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
+        if _album:
+            obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
+        else:
+            obj = await self.model.create(**schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         await obj.save()
         
-        picture_file_path = self.upload_file('track/picture')
+        picture_file_path = await self.upload_file('track/picture', picture_file)
         if picture_file_path['file_path'] != 'NULL':
             await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
         
-        track_file_path = self.upload_file('track/track_file')
+        track_file_path = await self.upload_file('track/track_file', track_file)
         if track_file_path['file_path'] != 'NULL':
-            track_duration_s = round(librosa.get_duration(path=track_file_path['file_path']))
+            print(track_file_path['file_path'])
+            track_duration_s = round(librosa.get_duration(filename=track_file_path['file_path']))
             await self.model.filter(id=obj.id).update(duration_s=track_duration_s, track_file_path=track_file_path['file_path'])
+            obj.duration_s = track_duration_s
             obj.track_file_path = track_file_path['file_path']
 
         _artists = await models.Artist.filter(id__in=artists)
@@ -50,6 +56,19 @@ class Track_service(Service_base):
                 'artists': _artists,
                 'genre': _genre,
                 'album': _album.id if _album else None}
+
+    async def change_picture(self, track_id: schemas.Track_change_picture, new_picture_file: UploadFile = File(...)) -> Optional[schemas.Track_change_picture_response]:
+        obj = await self.model.get(id=track_id.id)
+        picture_file_path = await self.upload_file('track/picture', new_picture_file)
+        if picture_file_path['file_path'] != 'NULL':
+            if obj.picture_file_path != 'data/default_image.png':
+                os.remove(obj.picture_file_path)
+            await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
+            obj.picture_file_path = picture_file_path['file_path']
+        else:
+            raise Exception
+
+        return {'picture_file_path': obj.picture_file_path}
 
     async def change_genre(self, schema, genre, **kwargs) -> Optional[schemas.Track_change_genre]:
         _genre = await models.get(id=genre)
@@ -67,6 +86,16 @@ class Track_service(Service_base):
                 'artists': _artists,
                 'libraries': _libraries,
                 'playlists': _playlists}
+
+    async def delete(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        if not obj:
+            raise HTTPException(
+                status_code=404, detail='Object does not exist'
+            )
+        os.remove(obj.track_file_path)
+        os.remove(obj.picture_file_path)
+        await obj.delete()
 
 
 track_s = Track_service()

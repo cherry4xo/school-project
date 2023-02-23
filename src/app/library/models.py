@@ -42,7 +42,8 @@ class Track(Model):
                             not_null=True)
     duration_s = fields.IntField(default=None)
     track_file_path = fields.CharField(max_length=1000,
-                                        not_null=True)
+                                        not_null=True,
+                                        default='')
 
     picture_file_path = fields.CharField(max_length=1000,
                                         not_null=True, default='data/default_image.png')

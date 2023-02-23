@@ -53,18 +53,30 @@ class Track_update(Track_base):
         orm_mode=True
 
 
-class Track_create(BaseModel):
+class Track_change_picture(BaseModel):
     id: int
-    name: str
-    duration_s: int
 
     @classmethod
     def as_form(cls, 
-                id: int = Form(...), 
+                id: int = Form(...)):
+        return cls(id=id)
+
+    class Config:
+        orm_mode=True
+
+
+class Track_change_picture_response(BaseModel):
+    picture_file_path: str
+
+
+class Track_create(BaseModel):
+    name: str
+
+    @classmethod
+    def as_form(cls, 
                 name: str = Form(...),
-                duration_s: int = Form(...)
     ):
-        return cls(id=id, name=name, duration_s=duration_s)   
+        return cls(name=name)   
 
     class Config:
         orm_mode=True

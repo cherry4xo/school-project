@@ -28,13 +28,11 @@ class Service_base:
 
     async def upload_file(self, dir: str, file: UploadFile = File(...)):
         try:
-            if file.content_type != 'image/jpeg':
-                raise ValueError
-            file_directory = f'data/{dir}/'
+            file_directory = f'data/{dir}'
             if not os.path.exists(file_directory):
                 os.makedirs(file_directory)
+            file.filename = f'{str(uuid.uuid4())}.{file.filename.split(".")[1]}'
             f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
-            f.filename = str(uuid.uuid4())
             await run_in_threadpool(shutil.copyfileobj, file.file, f)
         except Exception():
             return {'file_path': 'NULL'}
