@@ -68,6 +68,10 @@ class Track_change_picture(BaseModel):
 class Track_change_picture_response(BaseModel):
     picture_file_path: str
 
+    @classmethod
+    def as_form(cls, picture_file_path: str = Form(...)):
+        return cls(picture_file_path=picture_file_path)
+
 
 class Track_create(BaseModel):
     name: str

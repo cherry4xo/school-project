@@ -27,12 +27,18 @@ async def track_create(
 ):
     return await service.track_s.create(schema=track, artists=artists, album=album, genre=genre, picture_file=picture_file, track_file=track_file, duration_s=123)
 
-@track_router.put('/change/data/picture/{track_id}')
+@track_router.put('/update/data/picture/{track_id}')
 async def track_change_picture(
     track_id: int = Depends(schemas.Track_change_picture.as_form),
     new_picture_file: UploadFile = File(...)
 ):
     return await service.track_s.change_picture(track_id, new_picture_file)
+
+@track_router.delete('/delete/data/picture/{track_id}', status_code=204)
+async def track_delete_picture(
+    track_id: schemas.Track_change_picture = Depends(schemas.Track_change_picture.as_form)
+):
+    return await service.track_s.delete_picture(track_id)
 
 @track_router.get('/{track_id}', response_model=schemas.Track_get)
 async def track_get(

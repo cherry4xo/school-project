@@ -74,6 +74,13 @@ class Track_service(Service_base):
 
         return {'picture_file_path': obj.picture_file_path}
 
+    async def delete_picture(self, track_id: schemas.Track_change_picture = Depends(schemas.Track_change_picture_response.as_form)):
+        obj = await self.model.get(id=track_id.id)
+        if obj.picture_file_path != 'data/default_image.png':
+            os.remove(obj.picture_file_path)
+        await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
+        obj.picture_file_path = 'data/default_image.png'
+
     async def change_genre(self, schema, genre, **kwargs) -> Optional[schemas.Track_change_genre]:
         _genre = await models.get(id=genre)
         obj = await self.model.update(schema.dict(exclude_unset=True), genre=_genre, **kwargs)

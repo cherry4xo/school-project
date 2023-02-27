@@ -38,16 +38,16 @@ async def album_create(
 ):
     return await service.album_s.create(album, artists, tracks, genres, picture_file)
 
-@album_router.put('/update/data/', response_model=schemas.Album_change_picture_response)
+@album_router.put('/update/data/{album_id}', response_model=schemas.Album_change_picture_response)
 async def album_change_picture(
     picture_file: UploadFile = File(...),
-    album_id: schemas.Album_change_picture = Depends(schemas.Album_change_picture.as_form),
+    album_id: int = Depends(schemas.Album_change_picture.as_form),
 ):
     return await service.album_s.change_picture(album_id, picture_file)
 
-@album_router.delete('/delete/data/', status_code=204)
+@album_router.delete('/delete/data/{album_id}', status_code=204)
 async def album_delete_picture(
-    album_id: schemas.Album_change_picture = Depends(schemas.Album_change_picture.as_form)
+    album_id: int = Depends(schemas.Album_change_picture.as_form)
 ):  
     return await service.album_s.delete_picture(album_id)
 
