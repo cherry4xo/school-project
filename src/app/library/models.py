@@ -80,7 +80,8 @@ class Playlist(Model):
     release_date = fields.CharField(max_length=30)
 
     picture_file_path = fields.CharField(max_length=1000,
-                                        not_null=True)
+                                        not_null=True,
+                                        default='data/default_image.png')
 
     libraries: fields.ManyToManyRelation['Library']
     tracks: fields.ManyToManyRelation['Track']

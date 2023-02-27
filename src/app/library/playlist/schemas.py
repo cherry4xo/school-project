@@ -2,6 +2,7 @@ from typing import Optional, List
 
 #from tortoise.query_utils import Q
 from pydantic import BaseModel, create_model
+from fastapi import Form, Depends, File, UploadFile
 from tortoise.contrib.pydantic import PydanticModel, pydantic_model_creator
 from .. import models
 
@@ -32,13 +33,39 @@ class Playlist(BaseModel):
         orm_mode=True
 
 
-class Playlist_create(Playlist_base):
+class Playlist_create(BaseModel):
     name: str
     description: str
     release_date: str
 
+    @classmethod
+    def as_form(cls, 
+                name: str = Form(...),
+                description: str = Form(...),
+                release_date: str = Form(...)):
+        return cls(name=name, description=description, release_date=release_date)
+
     class Config:
         orm_mode=True
+
+
+class Playlist_change_picture(BaseModel):
+    id: int
+
+    @classmethod
+    def as_form(cls, id: int = Form(...)):
+        return cls(id=id)
+
+    class Config:
+        orm_mode=True
+
+
+class Playlist_change_picture_response(BaseModel):
+    picture_file_path: str
+
+    @classmethod
+    def as_form(cls, picture_file_path: str = Form(...)):
+        return cls(picture_file_path=picture_file_path)
 
 
 class Playlist_update(Playlist_base):
