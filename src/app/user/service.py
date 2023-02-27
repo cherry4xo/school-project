@@ -108,6 +108,16 @@ class User_service(Service_base):
         return {'user': await self.get_schema.from_tortoise_orm(obj),
                 'library': _lib}
 
+    async def delete(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        if not obj:
+            raise HTTPException(
+                status_code=404, detail='Object does not exist'
+            )
+        os.remove(obj.picture_file_path)
+        _lib = await models.Library.get()
+        await obj.delete()
+
 
 class Comment_service(Service_base):
     model = models.Comment

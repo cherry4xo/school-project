@@ -3,6 +3,7 @@ from typing import Optional, List
 #from tortoise.query_utils import Q
 from pydantic import BaseModel
 from tortoise.contrib.pydantic import PydanticModel, PydanticListModel, pydantic_model_creator
+from fastapi import Form, Depends, File, UploadFile
 from .. import models
 
 
@@ -30,8 +31,31 @@ class Artist(Artist_base):
         orm_mode=True
 
 
-class Artist_create(Artist_base):
+class Artist_change_picture(BaseModel):
+    id: int
+
+    @classmethod
+    def as_form(cls,
+                id: int = Form(...)):
+        return cls(id=id)
+
+    class Config:
+        orm_mode=True
+
+
+class Artist_change_picture_response(BaseModel):
     picture_file_path: str
+
+
+class Artist_create(BaseModel):
+    name: str
+    registration_date: str
+
+    @classmethod
+    def as_form(cls,
+                name: str = Form(...),
+                registraion_date: str = Form(...)):
+        return cls(name=name, registration_date=registraion_date)
 
     class Config:
         orm_mode=True
@@ -49,16 +73,20 @@ class Artist_update(Artist_base):
 
 
 class Artist_get_creation(BaseModel):
-    class Genre(BaseModel):
-        id: int
-    class Album(BaseModel):
-        id: int
-    class Track(BaseModel):
-        id: int
-    artist: Artist
-    genres: List[Genre] = []
-    albums: List[Album] = []
-    tracks: List[Track] = []
+    class Json_payload(BaseModel):
+        class Genre(BaseModel):
+            id: int
+        class Album(BaseModel):
+            id: int
+        class Track(BaseModel):
+            id: int
+        artist: Artist
+        genres: List[Genre] = []
+        albums: List[Album] = []
+        tracks: List[Track] = []
+
+    JSON_Payload: Json_payload
+    picture_file_path: str
 
     class Config:
         orm_mode=True

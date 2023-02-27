@@ -13,13 +13,13 @@ comment_router = APIRouter()
 templates = Jinja2Templates(directory='templates')
 
 
-def artists_checker(artists: List[str] = Form(...)):
+def artists_checker(artists: List[str] = Form(None)):
     if len(artists) == 1:
         artists = [item.strip() for item in artists[0].split(',')]
 
     return [artist for artist in artists]
 
-def genres_checker(genres: List[str] = Form(...)):
+def genres_checker(genres: List[str] = Form(None)):
     if len(genres) == 1:
         genres = [item.strip() for item in genres[0].split(',')]
 
