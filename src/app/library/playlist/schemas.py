@@ -71,7 +71,6 @@ class Playlist_change_picture_response(BaseModel):
 class Playlist_update(Playlist_base):
     name: str
     description: str
-    picture_file_path: str
 
     class Config:
         orm_mode=True

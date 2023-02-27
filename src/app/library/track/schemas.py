@@ -45,8 +45,6 @@ class Track_delete(Track_base):
 
 class Track_update(Track_base):
     id: int
-    track_path: str
-    picture_file_path: str
     duration_s: str
 
     class Config:

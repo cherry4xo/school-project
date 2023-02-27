@@ -65,9 +65,7 @@ class Artist_delete(Artist_base):
     id: int
 
 
-class Artist_update(Artist_base):
-    picture_file_path: str
-    
+class Artist_update(Artist_base):    
     class Config:
         orm_mode=True
 

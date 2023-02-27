@@ -58,8 +58,7 @@ class Track_service(Service_base):
                         'genre': _genre,
                         'album': _album.id if _album else None}
         
-        return {'JSON Payload': json_response,
-                'picture_file_path': picture_file_path['file_path']}
+        return json_response
 
     async def change_picture(self, track_id: schemas.Track_change_picture, new_picture_file: UploadFile = File(...)) -> Optional[schemas.Track_change_picture_response]:
         obj = await self.model.get(id=track_id.id)

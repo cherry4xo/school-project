@@ -52,7 +52,7 @@ class Album_service(Service_base):
                             album_id: schemas.Album_change_picture = Depends(schemas.Album_change_picture.as_form), 
                             new_picture_file: UploadFile = File(...)) -> Optional[schemas.Album_change_picture_response]:
         obj = await self.model.get(id=album_id.id)
-        picture_file_path = await self.upload_file(obj.id, new_picture_file)
+        picture_file_path = await self.upload_file('album', new_picture_file)
         if picture_file_path['file_path'] != 'NULL':
             if obj.picture_file_path != 'data/default_image.png':
                 os.remove(obj.picture_file_path)
@@ -87,7 +87,6 @@ class Album_service(Service_base):
                 status_code=404, detail='Object does not exist'
             )
         os.remove(obj.picture_file_path)
-        _lib = await models.Library.get()
         await obj.delete()
 
 

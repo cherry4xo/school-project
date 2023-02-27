@@ -29,7 +29,7 @@ class Playlist_service(Service_base):
         obj = await self.model.create(**schema.dict(exclude_unset=True), creator=_creator, **kwargs)
         await obj.save()
 
-        picture_file_path = await self.upload_file('album', picture_file)
+        picture_file_path = await self.upload_file('playlist', picture_file)
         if picture_file_path['file_path'] != 'NULL':
             await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
@@ -46,14 +46,13 @@ class Playlist_service(Service_base):
                         'tracks': _tracks,
                         'genres': _genres}
 
-        return {'JSON_Payload': json_response,
-                'picture_file_path': picture_file_path['file_path']}
+        return json_response
 
     async def change_picture(self, 
                             playlist_id: schemas.Playlist_change_picture = Depends(schemas.Playlist_change_picture.as_form), 
                             new_picture_file: UploadFile = File(...)) -> Optional[schemas.Playlist_change_picture_response]:
         obj = await self.model.get(id=playlist_id.id)
-        picture_file_path = await self.upload_file(obj.id, new_picture_file)
+        picture_file_path = await self.upload_file('playlist', new_picture_file)
         if picture_file_path['file_path'] != 'NULL':
             if obj.picture_file_path != 'data/default_image.png':
                 os.remove(obj.picture_file_path)
@@ -82,6 +81,15 @@ class Playlist_service(Service_base):
                 'tracks': _tracks,
                 'genres': _genres,
                 'libraries': _libraries}
+
+    async def delete(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        if not obj:
+            raise HTTPException(
+                status_code=404, detail='Object does not exist'
+            )
+        os.remove(obj.picture_file_path)
+        await obj.delete()
 
 
 playlist_s = Playlist_service()

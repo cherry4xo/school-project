@@ -73,7 +73,7 @@ class User_service(Service_base):
 
     async def change_picture(self, user_id: schemas.User_change_picture, new_picture_file: UploadFile = File(...)) -> Optional[schemas.User_change_picture_response]:
         obj = await self.model.get(id=user_id.id)
-        picture_file_path = await self.upload_file(obj.id, new_picture_file)
+        picture_file_path = await self.upload_file('user', new_picture_file)
         if picture_file_path['file_path'] != 'NULL':
             if obj.picture_file_path != 'data/default_image.png':
                 os.remove(obj.picture_file_path)
@@ -115,7 +115,7 @@ class User_service(Service_base):
                 status_code=404, detail='Object does not exist'
             )
         os.remove(obj.picture_file_path)
-        _lib = await models.Library.get()
+        await models.Library.filter(user_id=obj).delete()
         await obj.delete()
 
 
