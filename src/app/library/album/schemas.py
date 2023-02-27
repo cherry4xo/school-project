@@ -2,6 +2,7 @@ from typing import Optional, List
 
 #from tortoise.query_utils import Q
 from pydantic import BaseModel
+from fastapi import Form, Depends, UploadFile, File
 from tortoise.contrib.pydantic import PydanticModel, PydanticListModel, pydantic_model_creator
 from .. import models
 
@@ -19,7 +20,6 @@ class Album_base(PydanticModel):
     name: str
     description: str
     release_date: str
-    picture_file_path: str
 
     class Config:
         orm_mode=True
@@ -33,25 +33,55 @@ class Album(Album_base):
 
 
 class Album_get(BaseModel):
-    class Track(BaseModel):
-        id: int
-    class Artist(BaseModel):
-        id: int
-    class Genre(BaseModel):
-        id: int
-    album: Album
-    tracks: List[Track]
-    artists: List[Artist]
-    genres: List[Genre]
+    class Json_payload(BaseModel):
+        class Track(BaseModel):
+            id: int
+        class Artist(BaseModel):
+            id: int
+        class Genre(BaseModel):
+            id: int
+        album: Album
+        tracks: List[Track]
+        artists: List[Artist]
+        genres: List[Genre]
+
+    JSON_Payload: Json_payload
+    picture_file_path: str
 
     class Config:
         orm_mode=True
 
 
-class Album_create(Album_base):
-    '''tracks: List[getTrack] = []
-    artists: List[getArtist] = []
-    genre: Optional[int] = None'''
+class Album_create(BaseModel):
+    name: str
+    description: str
+    release_date: str
+
+    @classmethod
+    def as_form(cls, 
+                name: str = Form(...),
+                description: str = Form(...),
+                release_date: str = Form(...)):
+        return cls(name=name, description=description, release_date=release_date)
+
+    class Config:
+        orm_mode=True
+
+
+class Album_change_picture(BaseModel):
+    id: int
+
+    @classmethod
+    def as_form(cls, id: int = Form(...)):
+        return cls(id=id)
+
+
+class Album_change_picture_response(BaseModel):
+    picture_file_path: str
+
+    @classmethod
+    def as_form(cls, picture_file_path: str = Form(...)):
+        return cls(picture_file_path=picture_file_path)
 
     class Config:
         orm_mode=True

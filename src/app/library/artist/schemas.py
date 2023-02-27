@@ -92,6 +92,17 @@ class Artist_get_creation(BaseModel):
         orm_mode=True
 
 
+class Artist_change_picture(BaseModel):
+    id: int
+
+    @classmethod
+    def as_form(cls, id: int = Form(...)):
+        return cls(id=id)
+
+    class Config:
+        orm_mode=True
+
+
 class Artist_get(Artist_get_creation):
     class Library(BaseModel):
         id: int

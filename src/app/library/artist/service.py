@@ -51,7 +51,7 @@ class Artist_service(Service_base):
                 'picture_file_path': picture_file_path['file_path']}
 
     async def change_picture(self, 
-                            artist_id: schemas.Artist_change_picture, 
+                            artist_id: schemas.Artist_change_picture = Depends(schemas.Artist_change_picture.as_form), 
                             new_picture_file: UploadFile = File(...)) -> Optional[schemas.Artist_change_picture_response]:
         obj = await self.model.get(id=artist_id.id)
         picture_file_path = await self.upload_file('artist', new_picture_file)
@@ -64,6 +64,14 @@ class Artist_service(Service_base):
             raise Exception
 
         return {'picture_file_path': obj.picture_file_path}
+
+    async def delete_picture(self, 
+                            artist_id: schemas.Artist_change_picture = Depends(schemas.Artist_change_picture.as_form)):
+        obj = await self.model.get(id=artist_id.id)
+        if obj.picture_file_path != 'data/default_image.png':
+            os.remove(obj.picture_file_path)
+        await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
+        obj.picture_file_path = 'data/default_image.png'
 
     async def get(self, **kwargs) -> Optional[schemas.Artist_get]:
         obj = await self.model.get(**kwargs)
