@@ -1,10 +1,19 @@
-from typing import List, Optional
+from typing import List, Optional, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BaseConfig, create_model
 from tortoise.contrib.pydantic import pydantic_model_creator
+from fastapi.responses import FileResponse
 from .user import models as user_models
 from .library import models as library_models
 
+
+BaseConfig.arbitrary_types_allowed = True
+
+
+class File_response:
+    def __init__(self, file: dict):
+        self.file = file
+    __pydantic_model__ = create_model("File_response_model", file=(dict, ...))
 
 class Main_page_get(BaseModel):
     class User(BaseModel):
@@ -217,7 +226,6 @@ class Artist_page_get(BaseModel):
         id: int
         name: str
         registration_date: str
-        picture_file_path: str
     class Followers_count(BaseModel):
         count: str
     class Track(BaseModel):
@@ -227,16 +235,15 @@ class Artist_page_get(BaseModel):
         class Track_data(BaseModel):
             id: int
             name: str
-            picture_file_path: str
             track_file_path: str
             duration_s: int
         track_data: Track_data
+        track_picture: FileResponse
         artists: List[Artist]
     class Album(BaseModel):
         class Album_data(BaseModel):
             id: int
             name: str
-            picture_file_path: str
         class Artist(BaseModel):
             id: int
             name: str
@@ -247,22 +254,25 @@ class Artist_page_get(BaseModel):
             class Track_data(BaseModel):
                 id: int
                 name: str
-                picture_file_path: str
                 track_file_path: str
                 duration_s: int
             track_data: Track_data
             artists: List[Artist]
+            track_picture: FileResponse
         album_data: Album_data
+        album_picture: FileResponse
         artists: List[Artist]
         tracks: List[Track]
 
     artist_data: Artist_data
+    artist_picture: FileResponse
     followers_count: Followers_count
     tracks: List[Track]
     albums: List[Album]
 
     class Config:
         orm_mode=True
+        arbitraty_types_allowed=True
 
 
 class Status(BaseModel):

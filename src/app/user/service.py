@@ -103,7 +103,7 @@ class User_service(Service_base):
         obj = await self.model.get(id=user_id)
         return {'file': FileResponse(obj.picture_file_path, 
                                     media_type=f'image/{obj.picture_file_path.split(".")[1]}', 
-                                    filename=f'UserPicture_{obj.id}'),
+                                    filename=f'UserPicture_{obj.id}.{obj.picture_file_path.split(".")[1]}'),
                 'metadata': {'filename': obj.picture_file_path.split("/")[-1]}}
         
 
