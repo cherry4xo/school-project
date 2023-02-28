@@ -48,6 +48,12 @@ async def user_delete_picture(
 ):
     return await service.user_s.delete_picture(user_id)
 
+@user_router.get('/get_picture/{user_id}')
+async def user_get_picture(
+    user_id: int
+):
+    return await service.user_s.return_image(user_id)
+
 @user_router.get('/{user_id}', response_model=schemas.User_get)
 async def user_get(
     user_id: int
