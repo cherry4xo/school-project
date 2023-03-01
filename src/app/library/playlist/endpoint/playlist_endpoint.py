@@ -70,3 +70,31 @@ async def playlist_delete(
     playlist_id: int
 ):
     return await service.playlist_s.delete(id=playlist_id)
+
+@playlist_router.post('/add_tracks', status_code=204)
+async def playlist_add_tracks(
+    playlist_id: int,
+    tracks_id: List[int]
+):
+    return await service.playlist_s.add_tracks(playlist_id, tracks_id)
+
+@playlist_router.post('/remove_tracks', status_code=204)
+async def playlist_remove_tracks(
+    playlist_id: int,
+    tracks_id: List[int]
+):
+    return await service.playlist_s.remove_tracks(playlist_id, tracks_id)
+
+@playlist_router.post('/add_genres', status_code=204)
+async def playlist_add_genres(
+    playlist_id: int,
+    genres_id: List[int]
+):
+    return await service.playlist_s.add_tracks(playlist_id, genres_id)
+
+@playlist_router.post('/remove_genres', status_code=204)
+async def playlist_remove_genres(
+    playlist_id: int,
+    genres_id: List[int]
+):
+    return await service.playlist_s.remove_tracks(playlist_id, genres_id)

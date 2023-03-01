@@ -41,8 +41,14 @@ async def track_delete_picture(
 ):
     return await service.track_s.delete_picture(track_id)
 
-@track_router.get('/get_picture/{track_id}', response_class=FileResponse)
+@track_router.get('/get_picture/{track_id}', response_class=FileResponse, status_code=204)
 async def track_get_picture(
+    track_id: int
+):
+    return await service.track_s.get_image(id=track_id)
+
+@track_router.get('/get_track_file/{track_id}', response_class=FileResponse, status_code=204)
+async def track_get_file(
     track_id: int
 ):
     return await service.track_s.get_image(id=track_id)

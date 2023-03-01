@@ -76,3 +76,45 @@ async def artist_delete(
     artist_id: int
 ):
     return await service.artist_s.delete(id=artist_id)
+
+@artist_router.post('/add_albums', status_code=204)
+async def artist_add_albums(
+    artist_id: int,
+    albums_id: List[int]
+):
+    return await service.artist_s.add_albums(artist_id, albums_id)
+
+@artist_router.post('/remove_albums', status_code=204)
+async def artist_remove_albums(
+    artist_id: int,
+    albums_id: List[int]
+):
+    return await service.artist_s.remove_albums(artist_id, albums_id)
+
+@artist_router.post('/add_tracks', status_code=204)
+async def artist_add_tracks(
+    artist_id: int,
+    tracks_id: List[int]
+):
+    return await service.artist_s.add_albums(artist_id, tracks_id)
+
+@artist_router.post('/remove_tracks', status_code=204)
+async def artist_remove_tracks(
+    artist_id: int,
+    tracks_id: List[int]
+):
+    return await service.artist_s.remove_albums(artist_id, tracks_id)
+
+@artist_router.post('/add_genres', status_code=204)
+async def artist_add_genres(
+    artist_id: int,
+    genres_id: List[int]
+):
+    return await service.artist_s.add_albums(artist_id, genres_id)
+
+@artist_router.post('/remove_genres', status_code=204)
+async def artist_remove_genres(
+    artist_id: int,
+    genres_id: List[int]
+):
+    return await service.artist_s.remove_albums(artist_id, genres_id)

@@ -73,6 +73,48 @@ class Artist_service(Service_base):
         await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
         obj.picture_file_path = 'data/default_image.png'
 
+    async def add_albums(self, artist_id: int, albums_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _albums = await models.Album.filter(id__in=albums_id)
+        await obj.albums.add(*_albums)
+
+    async def remove_albums(self, artist_id: int, albums_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _albums = await models.Album.filter(id__in=albums_id)
+        await obj.albums.remove(*_albums)
+
+    async def add_tracks(self, artist_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _tracks = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.add(*_tracks)
+
+    async def remove_tracks(self, artist_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _tracks = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.remove(*_tracks)
+
+    async def add_genres(self, artist_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _genres = await models.Genre.filter(id__in=genres_id)
+        await obj.genres.add(*_genres)
+
+    async def remove_genres(self, artist_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=artist_id)
+        if not obj:
+            raise HTTPException(status=404, detail=f'Artist {artist_id} does not exist')
+        _genres = await models.Genre.filter(id__in=genres_id)
+        await obj.genres.remove(*_genres)
+
     async def get(self, **kwargs) -> Optional[schemas.Artist_get]:
         obj = await self.model.get(**kwargs)
         _genres = await models.Genre.filter(artists=obj.id)

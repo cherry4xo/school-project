@@ -70,6 +70,34 @@ class Playlist_service(Service_base):
         await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
         obj.picture_file_path = 'data/default_image.png'
 
+    async def add_tracks(self, playlist_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=playlist_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Playlist {playlist_id} does not exist')
+        _tracks = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.add(*_tracks)
+
+    async def remove_tracks(self, playlist_id: int, tracks_id: List[int]):
+        obj = await self.model.get_or_none(id=playlist_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Playlist {playlist_id} does not exist')
+        _tracks = await models.Track.filter(id__in=tracks_id)
+        await obj.tracks.remove(*_tracks)
+
+    async def add_genres(self, playlist_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=playlist_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Playlist {playlist_id} does not exist')
+        _genres = await models.Gerne.filter(id__in=genres_id)
+        await obj.genres.add(*_genres)
+
+    async def remove_genres(self, playlist_id: int, genres_id: List[int]):
+        obj = await self.model.get_or_none(id=playlist_id)
+        if not obj:
+            raise HTTPException(status_code=404, detail=f'Playlist {playlist_id} does not exist')
+        _genres = await models.Gerne.filter(id__in=genres_id)
+        await obj.genres.remove(*_genres)
+
     async def get(self, **kwargs) -> Optional[schemas.Playlist_get]:
         obj = await self.model.get(**kwargs)
         _tracks = await models.Track.filter(playlists=obj.id)
