@@ -19,7 +19,7 @@ class Album_service(Service_base):
     async def create(self, 
                     schema: schemas.Album_create = Depends(), 
                     artists: List[int] = Form(...), 
-                    tracks:List[int] = Form(...), 
+                    tracks: List[int] = Form(...), 
                     genres: List[int] = Form(None), 
                     picture_file: UploadFile = File(...), 
                     **kwargs) -> Optional[schemas.Create]:
@@ -69,6 +69,29 @@ class Album_service(Service_base):
             os.remove(obj.picture_file_path)
         await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
         obj.picture_file_path = 'data/default_image.png'
+
+    async def add_tracks(self, album_id: int, tracks: List[int]):
+        obj = await self.model.get_or_none(id=album_id)
+        if not obj:
+            return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
+        await models.Track.filter(id__in=tracks).update(album=obj)
+
+    async def remove_tracks(self, tracks: List[int]):
+        await models.Track.filter(id__in=tracks).update(album=None)
+
+    async def add_genres(self, album_id: int, genres: List[int]):
+        obj = await self.model.get(id=album_id)
+        if not obj:
+            return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
+        _genres = await models.Genre.filter(id__in=genres)
+        await obj.genres.add(*_genres)
+
+    async def add_genres(self, album_id: int, genres: List[int]):
+        obj = await self.model.get(id=album_id)
+        if not obj:
+            return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
+        _genres = await models.Genre.filter(id__in=genres)
+        await obj.genres.remove(*_genres)
 
     async def get(self, **kwargs):
         obj = await self.model.get(**kwargs)

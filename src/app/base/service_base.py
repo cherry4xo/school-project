@@ -87,7 +87,7 @@ class Service_base:
         await obj.adds.add(*_adds)
         return await self.get_schema.from_tortoise_orm(obj)
 
-    async def add_m2m_fields(self, obj_id: int, adds_ids: List[int]):
+    """async def add_m2m_fields(self, obj_id: int, adds_ids: List[int]):
         obj = await self.model.get_or_none(id=obj_id)
         if not obj:
             raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
@@ -99,4 +99,4 @@ class Service_base:
         if not obj:
             raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
         _adds_list = await adds_model.filter(id__in=adds_ids)
-        await obj.parts_model.remove(*_adds_list)
+        await obj.parts_model.remove(*_adds_list)"""

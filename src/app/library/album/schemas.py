@@ -85,7 +85,7 @@ class Album_change_picture_response(BaseModel):
 
     class Config:
         orm_mode=True
-
+        
 
 class Album_update(Album_base):
     class Config:

@@ -77,3 +77,31 @@ async def album_delete(
 ):
     return await service.album_s.delete(id=album_id)
 
+@album_router.post('/add_tracks', status_code=204)
+async def album_add_tracks(
+    album_id: int, 
+    tracks_id: List[int]
+):
+    return await service.album_s.add_tracks(album_id, tracks_id)
+
+@album_router.post('/remove_tracks', status_code=204)
+async def album_remove_tracks(
+    album_id: int, 
+    tracks_id: List[int]
+):
+    return await service.album_s.remove_tracks(album_id, tracks_id)
+
+@album_router.post('/add_genres', status_code=204)
+async def album_add_tracks(
+    album_id: int,
+    genres_id: List[int]
+):
+    return await service.album_s.add_genres(album_id, genres_id)
+
+@album_router.post('/add_genres', status_code=204)
+async def remove_add_tracks(
+    album_id: int,
+    genres_id: List[int]
+):
+    return await service.album_s.remove_genres(album_id, genres_id)
+
