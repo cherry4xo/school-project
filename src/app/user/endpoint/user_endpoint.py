@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, Request, status
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError, JSONResponse
 from .. import schemas
 from .. import models
@@ -48,11 +48,11 @@ async def user_delete_picture(
 ):
     return await service.user_s.delete_picture(user_id)
 
-@user_router.get('/get_picture/{user_id}')
+@user_router.get('/get_picture/{user_id}', response_class=FileResponse)
 async def user_get_picture(
     user_id: int
 ):
-    return await service.user_s.return_image(user_id)
+    return await service.user_s.get_image(id=user_id)
 
 @user_router.get('/{user_id}', response_model=schemas.User_get)
 async def user_get(

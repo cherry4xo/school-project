@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Form, Depends, File, UploadFile
+from fastapi.responses import FileResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from .. import schemas
 from ... import models
@@ -44,6 +45,12 @@ async def playlist_delete_picture(
     playlist_id: int = Depends(schemas.Playlist_change_picture.as_form)
 ):
     return await service.playlist_s.delete_picture(playlist_id)
+
+@playlist_router.get('/get_picture/{playlist_id}', response_class=FileResponse)
+async def playlist_get_picture(
+    playlist_id: int
+):
+    return await service.playlist_s.get_image(id=playlist_id)
 
 @playlist_router.get('/{playlist_id}', response_model=schemas.Playlist_get)
 async def playlist_get(

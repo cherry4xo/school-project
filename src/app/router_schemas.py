@@ -1,6 +1,7 @@
 from typing import List, Optional, TypeVar
 
 from pydantic import BaseModel, BaseConfig, create_model
+from pydantic.types import Json
 from tortoise.contrib.pydantic import pydantic_model_creator
 from fastapi.responses import FileResponse
 from .user import models as user_models
@@ -238,7 +239,6 @@ class Artist_page_get(BaseModel):
             track_file_path: str
             duration_s: int
         track_data: Track_data
-        track_picture: FileResponse
         artists: List[Artist]
     class Album(BaseModel):
         class Album_data(BaseModel):
@@ -258,14 +258,11 @@ class Artist_page_get(BaseModel):
                 duration_s: int
             track_data: Track_data
             artists: List[Artist]
-            track_picture: FileResponse
         album_data: Album_data
-        album_picture: FileResponse
         artists: List[Artist]
         tracks: List[Track]
 
     artist_data: Artist_data
-    artist_picture: FileResponse
     followers_count: Followers_count
     tracks: List[Track]
     albums: List[Album]

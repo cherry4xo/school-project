@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from ..schemas import *
 from .. import schemas
@@ -39,6 +40,12 @@ async def track_delete_picture(
     track_id: schemas.Track_change_picture = Depends(schemas.Track_change_picture.as_form)
 ):
     return await service.track_s.delete_picture(track_id)
+
+@track_router.get('/get_picture/{track_id}', response_class=FileResponse)
+async def track_get_picture(
+    track_id: int
+):
+    return await service.track_s.get_image(id=track_id)
 
 @track_router.get('/{track_id}', response_model=schemas.Track_get)
 async def track_get(

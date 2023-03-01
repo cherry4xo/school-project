@@ -4,6 +4,7 @@ import shutil
 from typing import TypeVar, Type, Optional, List
 
 from fastapi import HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 from tortoise import models
@@ -41,6 +42,17 @@ class Service_base:
             await file.close()
 
         return {'file_path': f'{file_directory}/{file.filename}'}
+
+    async def get_image(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        if obj.picture_file_path != 'data/default_image.png':
+            return FileResponse(obj.picture_file_path, 
+                                media_type=f'image/{obj.picture_file_path.split(".")[1]}', 
+                                filename=f'{obj.picture_file_path.split("/")[1]}_{obj.id}.{obj.picture_file_path.split(".")[-1]}')
+        else:
+            return FileResponse(obj.picture_file_path,
+                                media_type=f'image/png',
+                                filename='none_picture.png')
 
     async def create(self, schema, *args, **kwargs) -> Optional[Create_schema_type]:
         obj = await self.model.create(**schema.dict(exclude_unset=True), **kwargs)

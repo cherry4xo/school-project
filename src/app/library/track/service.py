@@ -4,6 +4,7 @@ import os
 from typing import Optional, List
 
 from fastapi import HTTPException, Form, Depends, File, UploadFile
+from fastapi.responses import FileResponse
 #from tortoise.query_utils import Query
 
 from ...base.service_base import Service_base
@@ -79,6 +80,12 @@ class Track_service(Service_base):
             os.remove(obj.picture_file_path)
         await self.model.filter(id=obj.id).update(picture_file_path='data/default_image.png')
         obj.picture_file_path = 'data/default_image.png'
+
+    async def get_track_file(self, **kwargs):
+        obj = await self.model.get(**kwargs)
+        return FileResponse(obj.track_file_path,
+                            media_type=f'audio/{obj.picture_file_path.split(".")[-1]}',
+                            filename=f'audio_{obj.id}.{obj.picture_file_path.split(".")[-1]}')
 
     async def change_genre(self, schema, genre, **kwargs) -> Optional[schemas.Track_change_genre]:
         _genre = await models.get(id=genre)

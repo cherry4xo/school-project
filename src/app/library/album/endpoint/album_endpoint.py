@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Form, Depends, UploadFile, File
+from fastapi.responses import FileResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from .. import schemas
 from ...models import *
@@ -50,6 +51,12 @@ async def album_delete_picture(
     album_id: int = Depends(schemas.Album_change_picture.as_form)
 ):  
     return await service.album_s.delete_picture(album_id)
+
+@album_router.get('/get_picture/{album_id}', response_class=FileResponse)
+async def album_get_picture(
+    album_id: int
+):
+    return await service.album_s.get_image(id=album_id)
 
 @album_router.get('/{album_id}', response_model=schemas.Album_get)
 async def album_get(

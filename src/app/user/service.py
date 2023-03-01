@@ -99,14 +99,6 @@ class User_service(Service_base):
             return await self.get_schema.from_queryset_single(self.model.get(**kwargs))
         else: return HTTPException(status_code=400, detail=f'Old password is not valid')
 
-    async def return_image(self, user_id: int):
-        obj = await self.model.get(id=user_id)
-        return {'file': FileResponse(obj.picture_file_path, 
-                                    media_type=f'image/{obj.picture_file_path.split(".")[1]}', 
-                                    filename=f'UserPicture_{obj.id}.{obj.picture_file_path.split(".")[1]}'),
-                'metadata': {'filename': obj.picture_file_path.split("/")[-1]}}
-        
-
     async def get_library(self, schema, **kwargs):
         obj = await self.model.get(**schema.dict(exclude_unset=True), **kwargs)
         return await self.get_schema.from_tortoise_orm(obj)
