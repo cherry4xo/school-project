@@ -133,3 +133,4 @@ dmypy.json
 /venv
 /env
 /data
+/src/rec_service/data

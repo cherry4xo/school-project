@@ -11,18 +11,24 @@ artist_router = APIRouter()
 
 
 def albums_checker(albums: List[str] = Form(None)):
+    if albums == '':
+        return None
     if len(albums) == 1:
         albums = [item.strip() for item in albums[0].split(',')]
 
     return [album for album in albums]
 
 def genres_checker(genres: List[str] = Form(None)):
+    if genres == '':
+        return None
     if len(genres) == 1:
         genres = [item.strip() for item in genres[0].split(',')]
 
     return [genre for genre in genres]
 
 def tracks_checker(tracks: List[str] = Form(None)):
+    if tracks == '':
+        return None
     if len(tracks) == 1:
         tracks = [item.strip() for item in tracks[0].split(',')]
     

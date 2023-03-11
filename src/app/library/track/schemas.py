@@ -99,7 +99,50 @@ class Track(BaseModel):
                 track_file_path: str = Form(...), 
                 picture_file_path: str = Form(...)
     ):
-        return cls(id=id, name=name, duration_s=duration_s, track_file_path=track_file_path, picture_file_path=picture_file_path)   
+        return cls(id=id, 
+                name=name, 
+                duration_s=duration_s, 
+                track_file_path=track_file_path, 
+                picture_file_path=picture_file_path)   
+
+    class Config:
+        orm_mode=True
+
+
+class Track_params(BaseModel):   
+    valence: Optional[float] = None
+    acousticness: Optional[float] = None
+    danceability: Optional[float] = None
+    energy: Optional[float] = None
+    explicit: Optional[bool] = None
+    instrumentalness: Optional[float] = None
+    liveness: Optional[float] = None
+    loudness: Optional[float] = None
+    speechiness: Optional[float] = None
+    tempo: Optional[float] = None
+
+    @classmethod
+    def as_form(cls, 
+                valence: float = Form(None),
+                acousticness: float = Form(None),
+                danceability: float = Form(None),
+                energy: float = Form(None),
+                explicit: bool = Form(None),
+                instrumentalness: float = Form(None),
+                liveness: float = Form(None),
+                loudness: float = Form(None),
+                speechiness: float = Form(None),
+                tempo: float = Form(None)):
+            return cls(valence=valence, 
+                    acousticness=acousticness,
+                    danceability=danceability,
+                    energy=energy,
+                    explicit=explicit,
+                    instrumentalness=instrumentalness,
+                    liveness=liveness,
+                    loudness=loudness,
+                    speechiness=speechiness,
+                    tempo=tempo)
 
     class Config:
         orm_mode=True

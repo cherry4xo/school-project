@@ -9,39 +9,14 @@ MYSQL_PORT = '3366'
 MYSQL_DB_NAME = 'testing'
 #-----------------------------------
 
-#
+#               Models config
 #----------------------------------------------
-'''
-MODELS = ['app.album.models',
-        'app.artist.models',
-        'app.comment.models',
-        'app.genre.models',
-        'app.playlist.models',
-        'app.track.models',
-        'app.user.models']'''
 
 MODELS = ['src.app.user.models',
-        'src.app.library.models']
+        'src.app.library.models',
+        'src.app.rec_service.models']
 
 #----------------------------------------------
-
-#               parser config
-#----------------------------------------------
-URL = "https://music.yandex.ru/album/22556299"  
-PATTERN = re.compile('var Mu=(.*?);')
-HTML_PARSER_DATATYPE = 'album'
-SCRIPTNUM = 0
-HTML_PARSER_FILEPATH = 'json/1.json'
-JSONPARSER_DATATYPE = 'album'
-#  sub parser config(for 2 or more data types)
-#----------------------------------------------
-URL_EXT = {'artist': "https://music.yandex.ru/artist/8176408",
-            'album': ["https://music.yandex.ru/album/22556299"] }
-PATTERN_EXT = re.compile('var Mu=(.*?);')
-HTML_PARSER_DATATYPE_EXT = ('artist', 'album') 
-SCRIPTNUM_EXT = {'artist': 0,
-                'album': 0}
-JSONPARSER_DATATYPE_EXT = ('artist', 'album')
 #               hash config
 #----------------------------------------------
 SALT = [b'\x03=\x06\xddn\x8d\x07\x8b\x926H\x91\xfb\xc9\x8e\xf8I\x07$n\xbf=u\xd9R\x8b\xa3\xb6\xdb7\xb6\x0c'
@@ -64,3 +39,22 @@ SALT = [b'\x03=\x06\xddn\x8d\x07\x8b\x926H\x91\xfb\xc9\x8e\xf8I\x07$n\xbf=u\xd9R
         b'"\xb3/\xbd\x9e,k\xab/\xb4\x8a\x0e1\x94\x14\xba\xe8XO1\x1e\xf5\xf7J\xfd\x84\x85\xa3\x9alL\x1b', 
         b'\x1eR\xf7m\xdc\x8aS\xe8R\x115\x05v\n_\xa3\xea-\xb8\xa1\xb7^k\xc7\x9f\x0f\xa8 \xfaX\x14\xf8', 
         b'\xb4\xd4\xd9\x86\xffbz\x0eF/%N\xafC\x85\xd0\xf7\x1e\xf4\x82\xe2\x04\xfe\xaf\xf2!\xb7\x90r4\xc0\x89']
+
+
+#               parser config
+#----------------------------------------------
+URL = "https://music.yandex.ru/album/22556299"  
+PATTERN = re.compile('var Mu=(.*?);')
+HTML_PARSER_DATATYPE = 'album'
+SCRIPTNUM = 0
+HTML_PARSER_FILEPATH = 'json/1.json'
+JSONPARSER_DATATYPE = 'album'
+#  sub parser config(for 2 or more data types)
+#----------------------------------------------
+URL_EXT = {'artist': "https://music.yandex.ru/artist/8176408",
+            'album': ["https://music.yandex.ru/album/22556299"] }
+PATTERN_EXT = re.compile('var Mu=(.*?);')
+HTML_PARSER_DATATYPE_EXT = ('artist', 'album') 
+SCRIPTNUM_EXT = {'artist': 0,
+                'album': 0}
+JSONPARSER_DATATYPE_EXT = ('artist', 'album')

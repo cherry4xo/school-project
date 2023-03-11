@@ -31,17 +31,22 @@ class Artist_service(Service_base):
         if picture_file_path['file_path'] != 'NULL':
             await self.model.filter(id=obj.id).update(picture_file_path=picture_file_path['file_path'])
             obj.picture_file_path = picture_file_path['file_path']
+        if genres != ['']:
+            _genres = await models.Genre.filter(id__in=genres)
+            if _genres:
+                await obj.genres.add(*_genres)
+        else: _genres = []
+        if albums != ['']:
+            _albums = await models.Album.filter(id__in=albums)
+            if _albums:
+                await obj.albums.add(*_albums)
+        else: _albums = []        
+        if tracks != ['']:
+            _tracks = await models.Track.filter(id__in=tracks)
+            if _tracks:
+                await obj.tracks.add(*_tracks)
+        else: _tracks = []
 
-        _genres = await models.Genre.filter(id__in=genres)
-        if _genres:
-            await obj.genres.add(*_genres)
-        _albums = await models.Album.filter(id__in=albums)
-        if _albums:
-            await obj.albums.add(*_albums)
-        _tracks = await models.Track.filter(id__in=tracks)
-        if _tracks:
-            await obj.tracks.add(*_tracks)
-        
         json_response = {'artist': await self.get_schema.from_tortoise_orm(obj),
                         'genres': _genres,
                         'albums': _albums,

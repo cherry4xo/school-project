@@ -8,8 +8,8 @@ from src.config import config
 
 
 app = FastAPI(
-    title="hey!",
-    description='Author - cherry4xo. Yes, ama author of this shit',
+    title="BMSTU project API",
+    description='Author - Kulakov Nikita (AKA cherry4xo)',
     version='0.1.0'
 )
 
