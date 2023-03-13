@@ -72,7 +72,7 @@ async def track_get_picture(
 async def track_get_file(
     track_id: int
 ):
-    return await service.track_s.get_image(id=track_id)
+    return await service.track_s.get_track_file(id=track_id)
 
 @track_router.get('/{track_id}', response_model=schemas.Track_get)
 async def track_get(

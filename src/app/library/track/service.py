@@ -29,7 +29,6 @@ class Track_service(Service_base):
                     picture_file: UploadFile = File(...),
                     track_file: UploadFile = File(...),
                     **kwargs) -> Optional[schemas.Track_create]:
-        print(track_params)
         _album = await models.Album.get_or_none(id=album)
         _genre = await models.Genre.get_or_none(id=genre)
         if not _genre:
@@ -39,7 +38,6 @@ class Track_service(Service_base):
         else:
             obj = await self.model.create(**schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         await obj.save()
-        print(track_params.dict(exclude_unset=True))
         _track_params = await model_params.Track_params.create(**track_params.dict(exclude_unset=True), track_id=obj)
         await _track_params.save()
         
@@ -90,8 +88,8 @@ class Track_service(Service_base):
     async def get_track_file(self, **kwargs):
         obj = await self.model.get(**kwargs)
         return FileResponse(obj.track_file_path,
-                            media_type=f'audio/{obj.picture_file_path.split(".")[-1]}',
-                            filename=f'audio_{obj.id}.{obj.picture_file_path.split(".")[-1]}')
+                            media_type=f'audio/{obj.track_file_path.split(".")[-1]}',
+                            filename=f'audio_{obj.id}.{obj.track_file_path.split(".")[-1]}')
 
     async def update_track_params(self, 
                                 track_id: int,
@@ -114,7 +112,7 @@ class Track_service(Service_base):
         _playlists = await models.Playlist.filter(tracks=obj.id)
         return {'track': await self.get_schema.from_tortoise_orm(obj),
                 'genre': {'id': obj.genre_id},
-                'album': {'id': obj.album_id},
+                'album': {'id': obj.album_id} if obj.album_id else None,
                 'artists': _artists,
                 'libraries': _libraries,
                 'playlists': _playlists}

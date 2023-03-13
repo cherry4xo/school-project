@@ -29,7 +29,7 @@ def tracks_checker(tracks: List[str] = Form(None)):
     return [track for track in tracks]
 
 
-@album_router.post('/', response_model=schemas.Album_get)
+@album_router.post('/', response_model=schemas.Album_get_creation)
 async def album_create(
     picture_file: UploadFile = File(...),
     album: schemas.Album_create = Depends(schemas.Album_create.as_form),

@@ -168,7 +168,7 @@ class Track_get_creation(BaseModel):
         @classmethod
         def as_form(cls, id: int = Form(...)): return cls(id=id)
     class Album(BaseModel):
-        id: int
+        id: Optional[int] = None
         @classmethod
         def as_form(cls, id: int = Form(...)): return cls(id=id)
     track: Track

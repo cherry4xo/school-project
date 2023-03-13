@@ -33,6 +33,19 @@ class Album(Album_base):
 
 
 class Album_get(BaseModel):
+    class Track(BaseModel):
+        id: int
+    class Artist(BaseModel):
+        id: int
+    class Genre(BaseModel):
+        id: int
+    album: Album
+    tracks: List[Track]
+    artists: List[Artist]
+    genres: List[Genre]
+
+
+class Album_get_creation(BaseModel):
     class Json_payload(BaseModel):
         class Track(BaseModel):
             id: int
