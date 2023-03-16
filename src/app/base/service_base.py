@@ -32,7 +32,7 @@ class Service_base:
             file_directory = f'data/{dir}'
             if not os.path.exists(file_directory):
                 os.makedirs(file_directory)
-            file.filename = f'{str(uuid.uuid4())}.{file.filename.split(".")[1]}'
+            file.filename = f'{str(uuid.uuid4())}.{file.filename.split(".")[-1]}'
             f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
             await run_in_threadpool(shutil.copyfileobj, file.file, f)
         except Exception():

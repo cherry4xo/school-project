@@ -77,7 +77,7 @@ class Album_service(Service_base):
         await models.Track.filter(id__in=tracks).update(album=obj)
 
     async def remove_tracks(self, tracks: List[int]):
-        await models.Track.filter(id__in=tracks).update(album=None)
+        await models.Track.filter(id__in=tracks).update(album_id=None)
 
     async def add_genres(self, album_id: int, genres: List[int]):
         obj = await self.model.get(id=album_id)
@@ -86,12 +86,26 @@ class Album_service(Service_base):
         _genres = await models.Genre.filter(id__in=genres)
         await obj.genres.add(*_genres)
 
-    async def add_genres(self, album_id: int, genres: List[int]):
+    async def remove_genres(self, album_id: int, genres: List[int]):
         obj = await self.model.get(id=album_id)
         if not obj:
             return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
         _genres = await models.Genre.filter(id__in=genres)
         await obj.genres.remove(*_genres)
+
+    async def add_artists(self, album_id: int, artists: List[int]):
+        obj = await self.model.get(id=album_id)
+        if not obj:
+            return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
+        _artists = await models.Artist.filter(id__in=artists)
+        await obj.genres.add(*_artists)
+
+    async def remove_artists(self, album_id: int, artists: List[int]):
+        obj = await self.model.get(id=album_id)
+        if not obj:
+            return HTTPException(status_code=404, detail=f'Album {album_id} does not exist')
+        _artists = await models.Artist.filter(id__in=artists)
+        await obj.genres.remove(*_artists)
 
     async def get(self, **kwargs):
         obj = await self.model.get(**kwargs)

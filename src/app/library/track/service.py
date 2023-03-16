@@ -34,7 +34,7 @@ class Track_service(Service_base):
         if not _genre:
             raise HTTPException(status_code=404, detail=f'Genre {genre} does not exist')
         if _album:
-            obj = await self.model.create(**schema.dict(exclude_unset=True), album=_album, genre=_genre, **kwargs)
+            obj = await self.model.create(**schema.dict(exclude_unset=True), album_id=_album, genre=_genre, **kwargs)
         else:
             obj = await self.model.create(**schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         await obj.save()
@@ -48,7 +48,6 @@ class Track_service(Service_base):
         
         track_file_path = await self.upload_file('track/track_file', track_file)
         if track_file_path['file_path'] != 'NULL':
-            print(track_file_path['file_path'])
             track_duration_s = round(librosa.get_duration(filename=track_file_path['file_path']))
             await self.model.filter(id=obj.id).update(duration_s=track_duration_s, track_file_path=track_file_path['file_path'])
             obj.duration_s = track_duration_s
