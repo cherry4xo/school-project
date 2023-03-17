@@ -11,6 +11,8 @@ from ...base.service_base import Service_base
 from .. import models
 from ...rec_service import models as model_params
 from ..track import schemas
+from ...recognition_service import models as model_spectro
+from ...recognition_service import service as recog_service
 
 
 class Track_service(Service_base):
@@ -38,6 +40,8 @@ class Track_service(Service_base):
         else:
             obj = await self.model.create(**schema.dict(exclude_unset=True), genre=_genre, **kwargs)
         await obj.save()
+        spectro = await recog_service.recog_s.create(track_id=obj.id)
+        await spectro.save()
         _track_params = await model_params.Track_params.create(**track_params.dict(exclude_unset=True), track_id=obj)
         await _track_params.save()
         

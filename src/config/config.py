@@ -14,7 +14,8 @@ MYSQL_DB_NAME = 'testing'
 
 MODELS = ['src.app.user.models',
         'src.app.library.models',
-        'src.app.rec_service.models']
+        'src.app.rec_service.models',
+        'src.app.recognition_service.models']
 
 #----------------------------------------------
 #               hash config

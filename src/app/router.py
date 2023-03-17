@@ -7,6 +7,7 @@ from .library.track.endpoint.track_endpoint import track_router
 from .library.endpoint.library_endpoint import library_router
 from .user.endpoint.user_endpoint import user_router, comment_router
 from .rec_service.rec_router import rec_router
+from .recognition_service.router import recognition_router
 
 from . import router_schemas
 from . import router_service
@@ -67,4 +68,5 @@ api_router.include_router(library_router, prefix='/library', tags=['library'])
 api_router.include_router(user_router, prefix='/user', tags=['user'])
 api_router.include_router(comment_router, prefix='/comment', tags=['comment'])
 api_router.include_router(rec_router, prefix='/recommendations', tags=['recommendations'])
+api_router.include_router(recognition_router, prefix='/music_recignition', tags=['music_recignition'])
 api_router.include_router(page_router)
