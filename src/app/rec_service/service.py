@@ -131,7 +131,6 @@ class Recs_service(Service_base):
         obj = await models.User.get(**kwargs)
         _library = await models.Library.get(user=obj)
         _tracks = await models.Track.filter(libraries=_library.id).values('id', 'name')
-        #_tracks = [i['id'] for i in _tracks]
         return await self.recommend_tracks(_tracks)
 
 rec_service = Recs_service()

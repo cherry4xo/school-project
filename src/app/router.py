@@ -33,9 +33,10 @@ async def get_search_page():
 
 @page_router.get('/page/track/{track_id}', response_model=router_schemas.Track_page_get)
 async def get_track_page(
-    track_id: int
+    track_id: int,
+    library_id: int
 ):
-    return await router_service.main_s.get_track_page(id=track_id)
+    return await router_service.main_s.get_track_page(library_id=library_id, id=track_id)
 
 @page_router.get('/page/album/{album_id}', response_model=router_schemas.Album_page_get)
 async def get_album_page(

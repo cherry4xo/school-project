@@ -11,6 +11,14 @@ from . import router_schemas
 
 
 class Main_service(Service_base):
+
+    async def get_is_track_added(self, library_id: Optional[int], track_id: Optional[int]) -> Optional[router_schemas.Library_is_track_added]:
+        _library = await library_models.Library.get_or_none(id=library_id)
+        if not _library:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        tracks = await library_models.Track.filter(libraries=_library.id).values('id')
+        return {'added': track_id in [i['id'] for i in tracks]}
+    
     async def get_main_page(self, **kwargs) -> Optional[router_schemas.Main_page_get]:
         _user = await user_models.User.get_or_none(**kwargs)
         if not _user:
@@ -141,8 +149,9 @@ class Main_service(Service_base):
                 'albums': albums_response,
                 'artists': artists_response}
 
-    async def get_track_page(self, **kwargs):
+    async def get_track_page(self, library_id: int, **kwargs):
         _track = await library_models.Track.get_or_none(**kwargs)
+        _is_library_added = (await self.get_is_track_added(library_id=library_id, track_id=_track.id))['added']
         _artists_track = await library_models.Artist.filter(tracks=_track.id).values('id')
         _artists_track_response = []
         for j in _artists_track:
@@ -150,7 +159,8 @@ class Main_service(Service_base):
             _artists_track_response.append({'id': _artist_track.id, 
                                             'name': _artist_track.name})
         return {'track_data': await router_schemas.Track_pydantic.from_tortoise_orm(_track),
-                'artists': _artists_track_response}
+                'artists': _artists_track_response,
+                'added': _is_library_added}
 
     async def get_album_page(self, **kwargs):
         _album = await library_models.Album.get_or_none(**kwargs)

@@ -22,6 +22,15 @@ class Library_base(BaseModel):
         orm_mode=True
 
 
+class Library_is_track_added(BaseModel):
+    added: bool
+
+
+class Get_added(BaseModel):
+    library_id: int
+    track_id: int
+
+
 class Library_create(Library_base):
     class Config:
         orm_mode=True

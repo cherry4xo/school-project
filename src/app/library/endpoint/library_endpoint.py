@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 from fastapi import APIRouter, HTTPException
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from .. import schemas
@@ -14,6 +14,12 @@ async def library_get(
     library_id: int,
 ):
     return await service.library_s.get(id=library_id)
+
+@library_router.post('/is_track_added', response_model=schemas.Library_is_track_added)
+async def library_is_track_added(
+    schema: schemas.Get_added
+):
+    return await service.library_s.get_is_track_added(library_id=schema.library_id, track_id=schema.track_id)
 
 @library_router.delete('/', status_code=204)
 async def library_delete(

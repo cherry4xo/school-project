@@ -28,6 +28,13 @@ class Library_service(Service_base):
         user_id = await models.User.filter(id=_library.user).first().values('id')
         return user_id
 
+    async def get_is_track_added(self, library_id: Optional[int], track_id: Optional[int]) -> schemas.Library_is_track_added:
+        _library = await self.model.get_or_none(id=library_id)
+        if not _library:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        tracks = await models.Track.filter(libraries=_library.id).values('id')
+        return {'added': track_id in [i['id'] for i in tracks]}
+
     async def get(self, id, **kwargs) -> Optional[schemas.Library_get]:
         obj = await self.model.get_or_none(id=id)
         if not obj:

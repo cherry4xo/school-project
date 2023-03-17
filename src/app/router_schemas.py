@@ -16,6 +16,9 @@ class File_response:
         self.file = file
     __pydantic_model__ = create_model("File_response_model", file=(dict, ...))
 
+class Library_is_track_added(BaseModel):
+    added: bool
+
 class Main_page_get(BaseModel):
     class User(BaseModel):
         id: int
@@ -160,6 +163,7 @@ class Track_page_get(BaseModel):
         duration_s: int
     track_data: Track_data
     artists: List[Artist]
+    added: bool
 
     class Config:
         orm_mode=True
