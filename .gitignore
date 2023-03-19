@@ -129,9 +129,11 @@ dmypy.json
 .pyre/
 
 .json
+.wav
+.mp3
 
 /venv
 /env
 /data
 /src/app/rec_service/data
-/src/rec_service/data
+/src/app/recognition_service/data

@@ -2,6 +2,7 @@ import os
 import json
 import uuid
 import shutil
+import operator
 
 from typing import Optional, List
 from collections import defaultdict
@@ -24,6 +25,25 @@ class Recognition_service(Service_base):
     model = model_spectro.Track_spectorgram
     get_schema = schemas.Get_track_spectrogram
 
+    def get_dict(self, arr):
+        res = {}
+        for dic in arr:
+            for key, val in dic.items():
+ 
+                # checking for key presence and updating max
+                if key in res:
+                    res[key] = max(res[key], val)
+                else:
+                    res[key] = val
+        return res
+
+    async def get_is_track_added(self, library_id: Optional[int], track_id: Optional[int]) -> Optional[bool]:
+        _library = await models.Library.get_or_none(id=library_id)
+        if not _library:
+            raise HTTPException(status_code=404, detail=f'Library {id} does not exist')
+        tracks = await models.Track.filter(libraries=_library.id).values('id')
+        return {'added': track_id in [i['id'] for i in tracks]}
+
     async def upload_last_recorded_audio_file(self, file: UploadFile = File(...)):
         try:
             file_directory = 'src/app/recognition_service/data'
@@ -32,10 +52,10 @@ class Recognition_service(Service_base):
             file.filename = 'last_recorded_audio.mp3'
             f = await run_in_threadpool(open, f'{file_directory}/{file.filename}', 'wb')
             await run_in_threadpool(shutil.copyfileobj, file.file, f)
-            await run_in_threadpool(convert.convertMP3ToWavForUpload, f'{file_directory}/last_recorded_audio.wav', format='wav')
-            await run_in_threadpool(os.remove, 'src/app/recognition_service/data/last_recorded_audio.mp3')
+            await run_in_threadpool(convert.convertMP3ToWavForUpload, f'{file_directory}/last_recorded_audio.mp3')
+            #await run_in_threadpool(os.remove, 'src/app/recognition_service/data/last_recorded_audio.mp3')
         except Exception():
-            return {'file_path': 'NULL'}
+            return
         finally:
             if 'f' in locals(): await run_in_threadpool(f.close)
             await file.close()
@@ -46,21 +66,26 @@ class Recognition_service(Service_base):
         await spectro.save()
         await self.make_peaks_file_from_list(track_id=track_id)
 
+    async def delete(self, track_id: int) -> Optional[None]:
+        obj = await model_spectro.Track_spectorgram.get(track_id_id=track_id)
+        if obj.peaks_file_path != '':
+            os.remove(obj.peaks_file_path)
+        await model_spectro.Track_spectorgram.filter(track_id=obj).delete()
+
     async def make_peaks_file_from_list(self, track_id: int) -> Optional[None]:
         obj = await models.Track.get(id=track_id)
         obj_spectro = await model_spectro.Track_spectorgram.get(track_id=obj)
-        print(obj.track_file_path)
         peaks = fingerprintSeparate(obj.track_file_path)
         file_dir = 'data/spectrograms'
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
         filename = f'{str(uuid.uuid4())}.csv'
-        if obj_spectro.peaks_file_path:
+        if obj_spectro.peaks_file_path != '':
             os.remove(obj_spectro.peaks_file_path)
             obj_spectro.peaks_file_path = None
-            obj_spectro.update(peaks_file_path=None)
-        np.savetxt(filename, peaks, delimiter=',', fmt='% s')
-        obj_spectro.update(peaks_file_path=filename)
+            await model_spectro.filter(id=obj_spectro.id).update(peaks_file_path=None)
+        np.savetxt(f'{file_dir}/{filename}', peaks, delimiter=',', fmt='% s')
+        await model_spectro.Track_spectorgram.filter(id=obj_spectro.id).update(peaks_file_path=f'{file_dir}/{filename}')
 
     async def delete_track_spectrogram_file(self, track_id: int) -> Optional[None]:
         track_spectro = await model_spectro.get(track_id_id=track_id)
@@ -71,19 +96,21 @@ class Recognition_service(Service_base):
 
     async def get_peaks_list_from_file(self, track_id: int) -> Optional[List]:
         obj = await model_spectro.Track_spectorgram.get(track_id_id=track_id)
-        peaks = np.loadtxt(obj.spectorgram_file_path, delimiter=',', dtype=int)
+        peaks = np.loadtxt(obj.peaks_file_path, delimiter=',', dtype=np.float64)
         peaks_list = peaks.tolist()
         return peaks_list 
 
     async def get_min_compares_from_tracks(self, library_id: int = Form(...), recorded_file: UploadFile = File(...)) -> Optional[schemas.Track_page_get]:
-        last_recorded_audio_path = 'src/app/recognition_service/data/last_recorded_audio.wav'
+        last_recorded_audio_path = 'src/app/recognition_service/data/last_recorded_audio.mp3'
         if os.path.isfile(last_recorded_audio_path):
             os.remove(last_recorded_audio_path)
-        await self.upload_file(recorded_file)
-        track_ids = await models.Track.all().values('id')
-        track_compares = [(await self.compareSongs(track_id)).keys() for track_id in track_ids]
-        track_compares = list(map(int, track_compares))
-        request_track_id = max(track_compares)
+        await self.upload_last_recorded_audio_file(recorded_file)
+        recorded_audio_peaks = fingerprintSeparate('src/app/recognition_service/data/last_recorded_audio.wav', plot=False)
+        track_ids = [track['id'] for track in (await models.Track.all().values('id'))]
+        track_compares = [(await self.compareSongs(track_id, recorded_audio_peaks=recorded_audio_peaks)) for track_id in track_ids]
+        request_dict = self.get_dict(track_compares)
+        request_track_id = max(request_dict, key=request_dict.get)
+
         _track = await models.Track.get_or_none(id=request_track_id)
         _is_library_added = (await self.get_is_track_added(library_id=library_id, track_id=_track.id))['added']
         _artists_track = await models.Artist.filter(tracks=_track.id).values('id')
@@ -107,9 +134,9 @@ class Recognition_service(Service_base):
 
         return callback
 
-    async def compareSongs(self, track_id: int) -> Optional[dict]:
-        fingerprint1 = self.get_peaks_list_from_file(track_id=track_id) # track peaks from db
-        fingerprint2 = fingerprintSeparate('last_recorded_audio.wav', plot=False) # recorded audio
+    async def compareSongs(self, track_id: int, recorded_audio_peaks) -> Optional[dict]:
+        fingerprint1 = await self.get_peaks_list_from_file(track_id=track_id) # track peaks from db
+        fingerprint2 = recorded_audio_peaks # recorded audio
 
         step = len(fingerprint2)
 

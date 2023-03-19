@@ -1,4 +1,10 @@
 import re
+import pydub
+import os
+from pathlib import Path
+
+#pydub.AudioSegment.converter = f"{os.getcwd()}".replace(os.path.sep, '/')
+#pydub.AudioSegment.ffmpeg = f"{os.getcwd()}".replace(os.path.sep, '/')
 
 #      DB connection config
 #-----------------------------------

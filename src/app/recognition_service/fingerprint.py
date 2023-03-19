@@ -54,8 +54,9 @@ def fingerprintSeparate(filename, plot=False):
 
     for i in range(len(secondSounds)):
         s = secondSounds[i]
-        s.export("wavSound.wav", format="wav")
-        signal, sr = librosa.load("wavSound.wav")
+        file_path = 'src/app/recognition_service/data/wavSound.wav'
+        s.export(file_path, format="wav")
+        signal, sr = librosa.load(file_path)
 
         # duration = librosa.get_duration(y=signal, sr=sr)
         # print(duration)

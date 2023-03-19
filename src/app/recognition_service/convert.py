@@ -1,13 +1,14 @@
-from pydub import AudioSegment
+import pydub
+import os
+from pathlib import Path
 
 def convertMP3ToWav(fileName):
-    AudioSegment.ffmpeg = 'data/track/track_file/'
-    sound = AudioSegment.from_mp3(fileName)
-    sound.export("last_recorded_audio.wav", format="wav")
+    #os.chmod(rf'{fileName}', 777)
+    #file_path = Path(os.getcwd().__str__() + '\\' + fileName)
+    sound = pydub.AudioSegment.from_mp3(rf'{fileName}')
+    #sound.export("last_recorded_audio.wav", format="wav")
     return sound
 
 def convertMP3ToWavForUpload(fileName):
-    AudioSegment.ffmpeg = 'src/app/recognition_service/data/'
-    sound = AudioSegment.from_mp3(fileName)
-    sound.export("last_recorded_audio.wav", format="wav")
-    return sound
+    sound = pydub.AudioSegment.from_mp3(rf'{fileName}')
+    sound.export('src/app/recognition_service/data/last_recorded_audio.wav', format="wav")
