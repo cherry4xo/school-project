@@ -132,6 +132,7 @@ dmypy.json
 .wav
 .mp3
 
+/ffmpeg
 /venv
 /env
 /data
