@@ -19,6 +19,8 @@ git clone -b rec_service https://github.com/cherry4xo/school-project
 ```
 2. In root directory of cloned repository run
 ```console
+python -m venv venv
+source venv/Scripts/activate
 pip install fastapi tortoise-orm[aiomysql] librosa numpy==1.23.5 pandas sklearn yellowbrick scipy difflib pydantic
 ```
 3. Install [Docker](https://www.docker.com/products/docker-desktop/)
