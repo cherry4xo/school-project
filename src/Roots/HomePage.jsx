@@ -8,27 +8,22 @@ export default function HomePage({ navigation }) {
 
     const [time, setTime] = useState('')
     const [userName, setUserName] = useState(null)
-    const [userAvatar, setUserAvatar] = useState(null)
+    const [avatar, setAvatar] = useState(null)
 
-    const getUserAvatar = async (id) => {
+    const loadImage = async (id) => {
         try {
-            let path = 'http://192.168.1.66:12345/user/get_picture/' + id
             const res = await fetch(
-                path,
+                'http://192.168.1.66:12345/user/get_picture/' + id,
                 {
                     method: 'GET',
-                    headers: {
-                        Accept: 'image/*',
-                        'Content-Type': 'image/*',
-                    },
+                    cache: 'no-cache'
                 }
-            );
-            const imageBlob = await res.blob();
-            const callback = URL.createObjectURL(imageBlob);
-            return callback
-
+            )
+            const data = await res.blob();
+            setAvatar(URL.createObjectURL(data));
+            return;
         } catch (error) {
-            console.error(error);
+            console.error(error)
         }
     };
 
@@ -72,9 +67,7 @@ export default function HomePage({ navigation }) {
         const fetchUserData = async () => {
             let user = await getUserData(1)
             setUserName(user.name)
-            let image = await getUserAvatar(1)
-            setUserAvatar(image)
-            console.log('start')
+            await loadImage(1)
         }
         fetchUserData()
     }, [])
@@ -85,7 +78,10 @@ export default function HomePage({ navigation }) {
         <View style={styles.container}>
             <ImageBackground blurRadius={0} source={bgImage} style={styles.image}>
                 <View style={styles.greeting}>
-                    <Image source={{ uri: userAvatar }} style={styles.userAvatar} />
+                    <Image
+                        source={{ uri: avatar }}
+                        style={styles.userAvatar}
+                    />
                     <View style={styles.greetingTextBlock}>
                         <Text style={styles.greetingText}>Good {time},</Text>
                         <Text style={[styles.greetingText, { color: '#FF0054' }]}>{userName}</Text>

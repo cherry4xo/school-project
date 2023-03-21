@@ -35,6 +35,7 @@ export default observer(class AudioSlider extends PureComponent {
             duration: 0,
             height: new Animated.Value(40),
             songIsSaved: false,
+            image: null
         }
 
         this.setSongIsSaved = this.setSongIsSaved.bind(this)
@@ -46,6 +47,23 @@ export default observer(class AudioSlider extends PureComponent {
         this.expandPlayer = this.expandPlayer.bind(this)
 
         this.collapsPlayer = this.collapsPlayer.bind(this)
+    };
+
+    loadImage = async (id) => {
+        try {
+            const res = await fetch(
+                'http://192.168.1.66:12345/track/get_picture/' + id,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+            const data = await res.blob();
+            this.setState({ image: URL.createObjectURL(data) })
+            return;
+        } catch (error) {
+            console.error(error)
+        }
     };
 
     setSongIsSaved(value) {
@@ -175,13 +193,19 @@ export default observer(class AudioSlider extends PureComponent {
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
+        this.loadImage(this.props.id)
+
         setInterval(this.runSlider, 1000);
+
+        this.play()
     }
 
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
 
             await this.soundObject.unloadAsync()
+
+            this.loadImage(this.props.id)
 
             this.soundObject = new Audio.Sound();
             await this.soundObject.loadAsync(this.props.track);
@@ -191,8 +215,6 @@ export default observer(class AudioSlider extends PureComponent {
 
             this.setCurrentTime(0)
             this.mapAudioToCurrentTime()
-
-            console.log(this.props.id)
 
             this.play()
         }
@@ -229,7 +251,7 @@ export default observer(class AudioSlider extends PureComponent {
                             flex: 1
                         }}
                         blurRadius={50}
-                    // source={{ uri: this.state.image }}
+                        source={{ uri: this.state.image }}
                     >
                         <View style={[styles.content, styles.expandedContainerStyle]}>
                             <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }} onPress={this.collapsPlayer}>
@@ -238,7 +260,7 @@ export default observer(class AudioSlider extends PureComponent {
 
                             <View style={styles.expandedContainerStyle}>
                                 <Image
-                                    // source={{ uri: this.state.image }}
+                                    source={{ uri: this.state.image }}
                                     style={[styles.trackPhoto, {
                                         width: 300, height: 300
                                     }]} />

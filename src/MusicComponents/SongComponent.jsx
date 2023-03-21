@@ -7,38 +7,30 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function SongComponent(props) {
-    const [image, setImage] = useState(null)
-    const getSongImage = async (id) => {
-        try {
-            let path = 'http://192.168.1.66:12345/track/get_picture/' + id
-            const res = await fetch(
-                path,
-                {
-                    method: 'GET',
-                    headers: {
-                        Accept: 'image/*',
-                        'Content-Type': 'image/*',
-                    },
-                }
-            );
-            const imageBlob = await res.blob();
-            const callback = URL.createObjectURL(imageBlob);
-            return callback
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const [duration, setDuration] = useState('')
     const [authors, setAuthors] = useState('')
 
-    useEffect(() => {
-        const getImage = async () => {
-            let img = await getSongImage(props.id)
-            setImage(img)
+    const loadImage = async (id) => {
+        try {
+            const res = await fetch(
+                'http://192.168.1.66:12345/track/get_picture/' + id,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+            const data = await res.blob();
+            setImage(URL.createObjectURL(data));
+            return;
+        } catch (error) {
+            console.error(error)
         }
-        getImage()
+    };
+
+    const [image, setImage] = useState(null)
+
+    useEffect(() => {
 
         let min = Math.floor(props.duration / 60)
         let sec = (props.duration % 60)
@@ -52,13 +44,17 @@ export default function SongComponent(props) {
             string += props.authors[i].name + ' '
         }
         setAuthors(string)
+        loadImage(props.id)
     }, [])
     return (
         <View>
             {
                 props.showImage ?
                     <View style={styles.content}>
-                        <Image style={{ width: 40, height: 35, marginRight: 0, borderRadius: 3 }} source={{ uri: image }} />
+                        <Image
+                            style={{ width: 40, height: 35, marginRight: 0, borderRadius: 3 }}
+                            source={{ uri: image }}
+                        />
                         <View style={{ width: '60%', fontSize: '18pt', marginHorizontal: 10, display: 'flex', flexDirection: 'column' }}>
                             <Text numberOfLines={1} style={[styles.text, { fontSize: '16pt' }]}>
                                 {props.name}
@@ -78,7 +74,7 @@ export default function SongComponent(props) {
                             {props.name}
                         </Text>
                         <Text numberOfLines={1} style={[styles.text, { width: '20%', color: '#FF0054', fontFamily: 'Nunito-Bold', fontSize: '16pt' }]}>
-                            4:20
+                            {duration}
                         </Text>
                     </View>
             }

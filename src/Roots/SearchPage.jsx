@@ -8,30 +8,7 @@ import { PlayerQueue } from '../mobX/playerQUEUE';
 
 export default function SearchPage(props) {
 
-    const getSongImage = async (id) => {
-        try {
-            let path = 'http://192.168.1.66:12345/track/get_picture/' + id
-            const res = await fetch(
-                path,
-                {
-                    method: 'GET',
-                    headers: {
-                        Accept: 'image/*',
-                        'Content-Type': 'image/*',
-                    },
-                }
-            );
-            const imageBlob = await res.blob();
-            const callback = URL.createObjectURL(imageBlob);
-            return callback
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     async function setSongAsQueue(track) {
-        let setImg = await getSongImage(track.track_data.id)
         let artistsString = ''
         for (let i = 0; i < track.artists.length; i++) {
             artistsString += track.artists[i].name + ' '
@@ -41,7 +18,6 @@ export default function SearchPage(props) {
                 artistsString
             ],
             "name": track.track_data.name,
-            "image": setImg,
             "id": track.track_data.id,
             "route": { uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
         }]
