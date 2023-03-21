@@ -1,36 +1,9 @@
-import { action, computed, makeObservable, observable } from "mobx"
+import { action, computed, makeObservable, observable, toJS } from "mobx"
 
 class PlayerQueueMobx {
     currentTrack = 0
     queue = {
         "tracks": [
-            {
-                "artists": [
-                    "Rammstein"
-                ],
-                "name": "Mein Hertz Brennt",
-                "trackDuration": 98820,
-                "trackPosition": 1,
-                "route": require('../../assets/audio/Rammstein_-_Mein_Herz_brennt.mp3')
-            },
-            {
-                "artists": [
-                    "Rammstein"
-                ],
-                "name": "Adieu",
-                "trackDuration": 126660,
-                "trackPosition": 2,
-                "route": require('../../assets/audio/Rammstein_-_Adieu.mp3')
-            },
-            {
-                "artists": [
-                    "Rammstein"
-                ],
-                "name": "Deutschland",
-                "trackDuration": 98820,
-                "trackPosition": 3,
-                "route": require('../../assets/audio/Rammstein_-_DEUTSCHLAND_(musmore.com).mp3')
-            },
         ]
     }
 
@@ -42,16 +15,26 @@ class PlayerQueueMobx {
             currentTrack: observable,
             increaseCurrentTrack: action,
             decreaseCurrentTrack: action,
-            getCurrentTrack: computed
+            setCurrentTrack: action,
+            getCurrentTrack: computed,
+            getCurrentImage: computed
         })
     }
 
     changeQueue(newQueue) {
-        this.queue = newQueue
+        this.queue.tracks = newQueue
+    }
+
+    get getCurrentImage() {
+        return this.queue.tracks[this.currentTrack].image
     }
 
     get getQueue() {
         return this.queue
+    }
+
+    setCurrentTrack = (pos) => {
+        this.currentTrack = pos
     }
 
     increaseCurrentTrack = () => {

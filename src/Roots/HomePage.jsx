@@ -2,11 +2,56 @@ import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, View, Text, StyleSheet } from "react-native";
 
 const bgImage = require('../../assets/img/HomeBG.png')
-const avatar = require('../../assets/img/avatar.jpg')
+// const avatar = require('../../assets/img/avatar.jpg')
 
 export default function HomePage({ navigation }) {
 
     const [time, setTime] = useState('')
+    const [userName, setUserName] = useState(null)
+    const [userAvatar, setUserAvatar] = useState(null)
+
+    const getUserAvatar = async (id) => {
+        try {
+            let path = 'http://192.168.1.66:12345/user/get_picture/' + id
+            const res = await fetch(
+                path,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'image/*',
+                        'Content-Type': 'image/*',
+                    },
+                }
+            );
+            const imageBlob = await res.blob();
+            const callback = URL.createObjectURL(imageBlob);
+            return callback
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const getUserData = async (id) => {
+        try {
+            let path = 'http://192.168.1.66:12345/main?user_id=' + id
+            const res = await fetch(
+                path,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const json = await res.json();
+            return json.user
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
         currentTime = new Date().getHours()
@@ -23,7 +68,16 @@ export default function HomePage({ navigation }) {
         if (currentTime >= 18 && currentTime < 24) {
             setTime('evening')
         }
-    })
+
+        const fetchUserData = async () => {
+            let user = await getUserData(1)
+            setUserName(user.name)
+            let image = await getUserAvatar(1)
+            setUserAvatar(image)
+            console.log('start')
+        }
+        fetchUserData()
+    }, [])
 
 
 
@@ -31,10 +85,10 @@ export default function HomePage({ navigation }) {
         <View style={styles.container}>
             <ImageBackground blurRadius={0} source={bgImage} style={styles.image}>
                 <View style={styles.greeting}>
-                    <Image source={avatar} style={styles.userAvatar} />
+                    <Image source={{ uri: userAvatar }} style={styles.userAvatar} />
                     <View style={styles.greetingTextBlock}>
                         <Text style={styles.greetingText}>Good {time},</Text>
-                        <Text style={[styles.greetingText, { color: '#FF0054' }]}>Macheloger!</Text>
+                        <Text style={[styles.greetingText, { color: '#FF0054' }]}>{userName}</Text>
                     </View>
                 </View>
             </ImageBackground>
@@ -77,5 +131,6 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 100,
         marginVertical: 60,
+        backgroundColor: 'black'
     }
 })

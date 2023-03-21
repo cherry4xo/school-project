@@ -88,7 +88,7 @@ export default observer(function App() {
               name="RecPage"
               component={RecPage}
               options={{
-                title: 'Recomendations',
+                title: 'Suggestion',
                 headerStyle: {
                   backgroundColor: 'black',
                   elevation: 0,
@@ -143,12 +143,17 @@ export default observer(function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-        <Player
-          track={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route}
-          trackIcon={require('./assets/img/avatar.jpg')}
-          trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
-          trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
-        />
+        {
+          PlayerQueue.getQueue.tracks.length > 0 ?
+            <Player
+              id={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id}
+              track={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route}
+              trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
+              trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
+            />
+            : null
+        }
+
       </SafeAreaView >
     </View >
   );

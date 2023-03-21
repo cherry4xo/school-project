@@ -2,14 +2,54 @@ import React from "react";
 import { StyleSheet, Text, View, Image, TouchableHighlight, ScrollView } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { useState } from "react";
+import { useEffect } from "react";
 
 export default function AlbumComponent(props) {
     const navigation = useNavigation();
     const toAlbumPage = () => navigation.navigate('AlbumPage')
+
+    const [authors, setAuthors] = useState('')
+    const [image, setImage] = useState(null)
+    const getAlbumImage = async (id) => {
+        try {
+            let path = 'http://192.168.1.66:12345/album/get_picture/' + id
+            const res = await fetch(
+                path,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'image/*',
+                        'Content-Type': 'image/*',
+                    },
+                }
+            );
+            const imageBlob = await res.blob();
+            const callback = URL.createObjectURL(imageBlob);
+            return callback
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        let string = ''
+        for (let i = 0; i < props.authors.length; i++) {
+            string += props.authors[i].name + ' '
+        }
+        setAuthors(string)
+        const getImage = async () => {
+            let img = await getAlbumImage(props.id)
+            setImage(img)
+        }
+        getImage()
+    }, [])
+
     return (
         <TouchableHighlight onPress={toAlbumPage}>
             <View style={{ width: 140, margin: 15 }}>
-                <Image style={styles.container} source={props.imagePath} />
+                <Image style={styles.container} source={{ uri: image }} />
                 <Text
                     numberOfLines={1}
                     style={[styles.text, { maxWidth: 140, overflow: 'hidden', marginTop: 5 }]}>
@@ -18,7 +58,7 @@ export default function AlbumComponent(props) {
                 <Text
                     numberOfLines={1}
                     style={[styles.text, { fontSize: 16, color: '#FF0054', maxWidth: 140, overflow: 'hidden' }]}>
-                    Author
+                    {authors}
                 </Text>
             </View>
         </TouchableHighlight>

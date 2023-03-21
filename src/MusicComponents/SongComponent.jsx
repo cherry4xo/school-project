@@ -1,29 +1,75 @@
-import { Button } from "@react-native-material/core";
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, View, TouchableHighlight, Image, ScrollView, Dimensions, } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function SongComponent(props) {
-    return (
-        <TouchableHighlight onPress={() => { }}>
+    const [image, setImage] = useState(null)
+    const getSongImage = async (id) => {
+        try {
+            let path = 'http://192.168.1.66:12345/track/get_picture/' + id
+            const res = await fetch(
+                path,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'image/*',
+                        'Content-Type': 'image/*',
+                    },
+                }
+            );
+            const imageBlob = await res.blob();
+            const callback = URL.createObjectURL(imageBlob);
+            return callback
 
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const [duration, setDuration] = useState('')
+    const [authors, setAuthors] = useState('')
+
+    useEffect(() => {
+        const getImage = async () => {
+            let img = await getSongImage(props.id)
+            setImage(img)
+        }
+        getImage()
+
+        let min = Math.floor(props.duration / 60)
+        let sec = (props.duration % 60)
+        if (sec < 10) {
+            sec = '0' + sec
+        }
+        setDuration(min + ':' + sec)
+
+        let string = ''
+        for (let i = 0; i < props.authors.length; i++) {
+            string += props.authors[i].name + ' '
+        }
+        setAuthors(string)
+    }, [])
+    return (
+        <View>
             {
                 props.showImage ?
                     <View style={styles.content}>
-                        <Image style={{ width: 40, height: 35, marginRight: 0, borderRadius: 3 }} source={require('../../assets/img/avatar.jpg')} />
+                        <Image style={{ width: 40, height: 35, marginRight: 0, borderRadius: 3 }} source={{ uri: image }} />
                         <View style={{ width: '60%', fontSize: '18pt', marginHorizontal: 10, display: 'flex', flexDirection: 'column' }}>
                             <Text numberOfLines={1} style={[styles.text, { fontSize: '16pt' }]}>
                                 {props.name}
                             </Text>
                             <Text numberOfLines={1} style={[styles.text, { fontSize: '14pt', color: 'grey' }]}>
-                                Author
+                                {authors}
                             </Text>
                         </View>
 
                         <Text numberOfLines={1} style={[styles.text, { width: '20%', color: '#FF0054', fontFamily: 'Nunito-Bold', fontSize: '16pt' }]}>
-                            4:20
+                            {duration}
                         </Text>
                     </View>
                     :
@@ -37,7 +83,7 @@ export default function SongComponent(props) {
                     </View>
             }
 
-        </TouchableHighlight>
+        </View>
     );
 }
 

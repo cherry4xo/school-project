@@ -123,7 +123,7 @@ export default observer(class AudioSlider extends PureComponent {
         PlayerQueue.increaseCurrentTrack()
 
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
+        await this.soundObject.loadAsync(this.props.track);
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -138,7 +138,7 @@ export default observer(class AudioSlider extends PureComponent {
         PlayerQueue.decreaseCurrentTrack()
 
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
+        await this.soundObject.loadAsync(this.props.track);
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -171,11 +171,31 @@ export default observer(class AudioSlider extends PureComponent {
 
     async componentDidMount() {
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route);
+        await this.soundObject.loadAsync(this.props.track);
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
         setInterval(this.runSlider, 1000);
+    }
+
+    async componentDidUpdate(prevProps) {
+        if (prevProps !== this.props) {
+
+            await this.soundObject.unloadAsync()
+
+            this.soundObject = new Audio.Sound();
+            await this.soundObject.loadAsync(this.props.track);
+
+            const status = await this.soundObject.getStatusAsync();
+            this.setState({ duration: status["durationMillis"] });
+
+            this.setCurrentTime(0)
+            this.mapAudioToCurrentTime()
+
+            console.log(this.props.id)
+
+            this.play()
+        }
     }
 
     async componentWillUnmount() {
@@ -196,7 +216,8 @@ export default observer(class AudioSlider extends PureComponent {
                         top: this.state.height,
                         width: windowWidth,
                         position: 'absolute',
-                        zIndex: 2
+                        zIndex: 2,
+                        backgroundColor: 'black'
                     }}
                 >
                     <ImageBackground
@@ -208,7 +229,7 @@ export default observer(class AudioSlider extends PureComponent {
                             flex: 1
                         }}
                         blurRadius={50}
-                        source={this.props.trackIcon}
+                    // source={{ uri: this.state.image }}
                     >
                         <View style={[styles.content, styles.expandedContainerStyle]}>
                             <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }} onPress={this.collapsPlayer}>
@@ -216,9 +237,11 @@ export default observer(class AudioSlider extends PureComponent {
                             </TouchableOpacity>
 
                             <View style={styles.expandedContainerStyle}>
-                                <Image source={this.props.trackIcon} style={[styles.trackPhoto, {
-                                    width: 300, height: 300
-                                }]} />
+                                <Image
+                                    // source={{ uri: this.state.image }}
+                                    style={[styles.trackPhoto, {
+                                        width: 300, height: 300
+                                    }]} />
 
                                 <View style={styles.expandedTrackInfo}>
                                     {this.trackNameAmountOfSymbols > 23 ?
