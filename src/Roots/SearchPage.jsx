@@ -1,4 +1,3 @@
-import { even } from '@react-native-material/core';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableHighlight } from 'react-native';
@@ -8,18 +7,35 @@ import { PlayerQueue } from '../mobX/playerQUEUE';
 
 export default function SearchPage(props) {
 
-    async function setSongAsQueue(track) {
+    const setSongAsQueue = async (track) => {
+        const loadSong = async (id) => {
+            try {
+                const res = await fetch(
+                    'http://192.168.1.66:12345/track/get_picture/' + id,
+                    {
+                        method: 'GET',
+                        cache: 'no-cache'
+                    }
+                )
+                const data = await res.blob();
+                return URL.createObjectURL(data)
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
         let artistsString = ''
         for (let i = 0; i < track.artists.length; i++) {
             artistsString += track.artists[i].name + ' '
         }
+        let song = await loadSong(track.track_data.id)
+        console.log(song)
         let post = [{
             "artists": [
                 artistsString
             ],
             "name": track.track_data.name,
             "id": track.track_data.id,
-            "route": { uri: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
         }]
         PlayerQueue.setCurrentTrack(0)
         PlayerQueue.changeQueue(post)

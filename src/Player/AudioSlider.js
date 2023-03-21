@@ -35,7 +35,8 @@ export default observer(class AudioSlider extends PureComponent {
             duration: 0,
             height: new Animated.Value(40),
             songIsSaved: false,
-            image: null
+            image: null,
+            sound: null
         }
 
         this.setSongIsSaved = this.setSongIsSaved.bind(this)
@@ -60,6 +61,23 @@ export default observer(class AudioSlider extends PureComponent {
             )
             const data = await res.blob();
             this.setState({ image: URL.createObjectURL(data) })
+            return;
+        } catch (error) {
+            console.error(error)
+        }
+    };
+
+    loadSound = async (id) => {
+        try {
+            const res = await fetch(
+                'http://192.168.1.66:12345/track/get_picture/' + id,
+                {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }
+            )
+            const data = await res.blob();
+            this.setState({ sound: URL.createObjectURL(data) })
             return;
         } catch (error) {
             console.error(error)
@@ -141,7 +159,10 @@ export default observer(class AudioSlider extends PureComponent {
         PlayerQueue.increaseCurrentTrack()
 
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(this.props.track);
+
+        await this.loadSound()
+        await this.soundObject.loadAsync({ uri: this.state.sound });
+
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -156,7 +177,10 @@ export default observer(class AudioSlider extends PureComponent {
         PlayerQueue.decreaseCurrentTrack()
 
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(this.props.track);
+
+        await this.loadSound()
+        await this.soundObject.loadAsync({ uri: this.state.sound });
+
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -189,7 +213,10 @@ export default observer(class AudioSlider extends PureComponent {
 
     async componentDidMount() {
         this.soundObject = new Audio.Sound();
-        await this.soundObject.loadAsync(this.props.track);
+
+        await this.loadSound()
+        await this.soundObject.loadAsync({ uri: this.state.sound });
+
         const status = await this.soundObject.getStatusAsync();
         this.setState({ duration: status["durationMillis"] });
 
@@ -208,7 +235,9 @@ export default observer(class AudioSlider extends PureComponent {
             this.loadImage(this.props.id)
 
             this.soundObject = new Audio.Sound();
-            await this.soundObject.loadAsync(this.props.track);
+
+            await this.loadSound()
+            await this.soundObject.loadAsync({ uri: this.state.sound });
 
             const status = await this.soundObject.getStatusAsync();
             this.setState({ duration: status["durationMillis"] });

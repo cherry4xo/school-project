@@ -147,7 +147,6 @@ export default observer(function App() {
           PlayerQueue.getQueue.tracks.length > 0 ?
             <Player
               id={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id}
-              track={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].route}
               trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
               trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
             />
