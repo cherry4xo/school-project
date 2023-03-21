@@ -33,4 +33,4 @@ docker-compose up -d
 uvicorn main:app --host <host> --port <port> --reload
 ```
 where `<host>` and `<port>` is desired host and port of your API
- 
+##If everything works fine, you'll see Swagger UI page at opening `<host>:<port>/docs`:
