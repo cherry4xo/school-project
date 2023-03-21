@@ -235,7 +235,6 @@ export default observer(class AudioSlider extends PureComponent {
             this.loadImage(this.props.id)
 
             this.soundObject = new Audio.Sound();
-
             await this.loadSound()
             await this.soundObject.loadAsync({ uri: this.state.sound });
 
