@@ -7,37 +7,33 @@ import { PlayerQueue } from '../mobX/playerQUEUE';
 
 export default function SearchPage(props) {
 
-    const setSongAsQueue = async (track) => {
-        const loadSong = async (id) => {
-            try {
-                const res = await fetch(
-                    'http://192.168.1.66:12345/track/get_picture/' + id,
-                    {
-                        method: 'GET',
-                        cache: 'no-cache'
-                    }
-                )
-                const data = await res.blob();
-                return URL.createObjectURL(data)
-            } catch (error) {
-                console.error(error)
-            }
-        };
+    const createQueue = async () => {
+        for (let i = 0; i < songsList.length; i++) {
 
-        let artistsString = ''
-        for (let i = 0; i < track.artists.length; i++) {
-            artistsString += track.artists[i].name + ' '
         }
-        let song = await loadSong(track.track_data.id)
-        console.log(song)
-        let post = [{
-            "artists": [
-                artistsString
-            ],
-            "name": track.track_data.name,
-            "id": track.track_data.id,
-        }]
-        PlayerQueue.setCurrentTrack(0)
+    }
+
+    const setSongAsQueue = async (index) => {
+
+        let post = []
+
+        for (let i = 0; i < songsList.length; i++) {
+            let track = songsList[i]
+            let artistsString = ''
+            for (let i = 0; i < track.artists.length; i++) {
+                artistsString += track.artists[i].name + ' '
+            }
+
+            post.push({
+                "artists": [
+                    artistsString
+                ],
+                "name": track.track_data.name,
+                "id": track.track_data.id,
+            })
+        }
+
+        PlayerQueue.setCurrentTrack(index)
         PlayerQueue.changeQueue(post)
     }
 
@@ -49,10 +45,10 @@ export default function SearchPage(props) {
                     <View>
                         <View style={[styles.line, { width: '100%' }]} />
                         {
-                            songsList.map((item) => {
+                            songsList.map((item, index) => {
                                 return (
                                     <View key={item.track_data.id}>
-                                        <TouchableHighlight onPress={() => { setSongAsQueue(item) }}>
+                                        <TouchableHighlight onPress={() => { setSongAsQueue(index) }}>
                                             <View>
                                                 <Song
                                                     showImage={true}
@@ -298,7 +294,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontFamily: 'Nunito-Bold',
-        fontSize: '20pt'
+        fontSize: 20
     },
     input: {
         width: '90%',
@@ -310,7 +306,7 @@ const styles = StyleSheet.create({
 
         color: 'white',
         fontFamily: 'Nunito-Regular',
-        fontSize: '18pt'
+        fontSize: 18
     },
     searchTypes: {
         flexDirection: 'row',
@@ -319,7 +315,7 @@ const styles = StyleSheet.create({
     },
     searchTypeText: {
         fontFamily: 'Nunito-Bold',
-        fontSize: '18pt',
+        fontSize: 18,
         margin: 10,
     },
     SearchBlock: {

@@ -7,9 +7,14 @@ import {
     ImageBackground,
     Dimensions,
     TouchableOpacity,
-    Animated
+    Animated,
+    LogBox
 } from "react-native";
 import Slider from '@react-native-community/slider'
+
+import * as FileSystem from 'expo-file-system'
+
+import { Asset } from 'expo-asset'
 
 import { Audio } from 'expo-av';
 
@@ -67,17 +72,47 @@ export default observer(class AudioSlider extends PureComponent {
         }
     };
 
+    blobToBase64(blob) {
+        return new Promise((resolve, _) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
+
     loadSound = async (id) => {
         try {
             const res = await fetch(
-                'http://192.168.1.66:12345/track/get_picture/' + id,
+                'http://192.168.1.66:12345/track/get_track_file/' + id,
                 {
                     method: 'GET',
-                    cache: 'no-cache'
+                    cache: 'no-cache',
+                    cache: 'default',
+                    headers: {
+                        "Content-Type": "audio/mp3"
+                    }
                 }
             )
             const data = await res.blob();
-            this.setState({ sound: URL.createObjectURL(data) })
+            // this.setState({ sound: URL.createObjectURL(data) })
+
+            //base64
+            let base64 = await this.blobToBase64(data)
+
+            const options = { encoding: FileSystem.EncodingType.Base64 };
+
+            const testUri = FileSystem.documentDirectory + "sound.mp3";
+            await FileSystem.writeAsStringAsync(testUri, base64.split(',')[1], options);
+
+            const file = await FileSystem.getInfoAsync(
+                FileSystem.documentDirectory + "sound.mp3"
+            );
+
+            // const UTI = 'audio/mp3'
+            // await Sharing.shareAsync(file.uri, { UTI })
+
+            this.setState({ sound: testUri })
+
             return;
         } catch (error) {
             console.error(error)
@@ -157,37 +192,11 @@ export default observer(class AudioSlider extends PureComponent {
     playNextSong = async () => {
         await this.soundObject.unloadAsync()
         PlayerQueue.increaseCurrentTrack()
-
-        this.soundObject = new Audio.Sound();
-
-        await this.loadSound()
-        await this.soundObject.loadAsync({ uri: this.state.sound });
-
-        const status = await this.soundObject.getStatusAsync();
-        this.setState({ duration: status["durationMillis"] });
-
-        this.setCurrentTime(0)
-        this.mapAudioToCurrentTime()
-
-        this.play()
     }
 
     playPrevSong = async () => {
         await this.soundObject.unloadAsync()
         PlayerQueue.decreaseCurrentTrack()
-
-        this.soundObject = new Audio.Sound();
-
-        await this.loadSound()
-        await this.soundObject.loadAsync({ uri: this.state.sound });
-
-        const status = await this.soundObject.getStatusAsync();
-        this.setState({ duration: status["durationMillis"] });
-
-        this.setCurrentTime(0)
-        this.mapAudioToCurrentTime()
-
-        this.play()
     }
 
     runSlider = async () => {
@@ -212,9 +221,10 @@ export default observer(class AudioSlider extends PureComponent {
     }
 
     async componentDidMount() {
+        await Audio.setIsEnabledAsync(true);
         this.soundObject = new Audio.Sound();
 
-        await this.loadSound()
+        await this.loadSound(this.props.id)
         await this.soundObject.loadAsync({ uri: this.state.sound });
 
         const status = await this.soundObject.getStatusAsync();
@@ -229,19 +239,19 @@ export default observer(class AudioSlider extends PureComponent {
 
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
+            this.pause()
+            this.setCurrentTime(0)
 
             await this.soundObject.unloadAsync()
 
             this.loadImage(this.props.id)
 
-            this.soundObject = new Audio.Sound();
-            await this.loadSound()
+            await this.loadSound(this.props.id)
             await this.soundObject.loadAsync({ uri: this.state.sound });
 
             const status = await this.soundObject.getStatusAsync();
             this.setState({ duration: status["durationMillis"] });
 
-            this.setCurrentTime(0)
             this.mapAudioToCurrentTime()
 
             this.play()
@@ -300,7 +310,7 @@ export default observer(class AudioSlider extends PureComponent {
                                                 style={{
                                                     width: 200,
                                                     color: 'white',
-                                                    fontSize: '20pt',
+                                                    fontSize: 20,
                                                     fontFamily: 'Nunito-Bold',
                                                 }}
                                                 duration={10000}
@@ -499,7 +509,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: '20pt',
+        fontSize: 20,
         fontFamily: 'Nunito-Bold',
         flexWrap: 'nowrap',
         overflow: 'hidden',

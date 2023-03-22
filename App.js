@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, LogBox } from 'react-native';
 
 //rooting
 import { NavigationContainer } from '@react-navigation/native';
@@ -31,6 +31,8 @@ setAudioModeAsync({
 })
 
 export default observer(function App() {
+
+  // LogBox.ignoreAllLogs() // ignore warnings for presentation video
 
   useEffect(() => {
   })
@@ -143,15 +145,18 @@ export default observer(function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-        {
-          PlayerQueue.getQueue.tracks.length > 0 ?
-            <Player
-              id={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id}
-              trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
-              trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
-            />
-            : null
-        }
+        <View>
+          {
+            PlayerQueue.getQueue.tracks.length > 0 ?
+              <Player
+                id={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id}
+                trackAuthor={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].artists[0]}
+                trackName={PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].name}
+              />
+              : null
+          }
+        </View>
+
 
       </SafeAreaView >
     </View >

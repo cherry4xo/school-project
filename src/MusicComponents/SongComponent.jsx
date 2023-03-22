@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         color: 'white',
         maxWidth: windowWidth,
         fontFamily: 'Nunito-Medium',
-        fontSize: '20pt',
+        fontSize: 20,
         overflow: 'hidden',
     },
 })
