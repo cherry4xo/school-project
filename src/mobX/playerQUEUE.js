@@ -17,12 +17,17 @@ class PlayerQueueMobx {
             decreaseCurrentTrack: action,
             setCurrentTrack: action,
             getCurrentTrack: computed,
-            getCurrentImage: computed
+            getCurrentImage: computed,
+            isAlone: computed
         })
     }
 
     changeQueue(newQueue) {
         this.queue.tracks = newQueue
+    }
+
+    get isAlone() {
+        return this.queue.tracks.length == 1
     }
 
     get getCurrentImage() {

@@ -49,7 +49,6 @@ export default observer(function App() {
   return (
     < View >
       <SafeAreaView style={styles.container}>
-
         <NavigationContainer>
           <Tab.Navigator
             initialRouteName='Home'

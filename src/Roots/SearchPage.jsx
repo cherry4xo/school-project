@@ -7,12 +7,6 @@ import { PlayerQueue } from '../mobX/playerQUEUE';
 
 export default function SearchPage(props) {
 
-    const createQueue = async () => {
-        for (let i = 0; i < songsList.length; i++) {
-
-        }
-    }
-
     const setSongAsQueue = async (index) => {
 
         let post = []
@@ -85,7 +79,12 @@ export default function SearchPage(props) {
                         {
                             albumsList.map((item) => {
                                 return (
-                                    <Album key={item.album_data.id} id={item.album_data.id} albumName={item.album_data.name} authors={item.artists} />
+                                    <Album
+                                        key={item.album_data.id}
+                                        id={item.album_data.id}
+                                        albumName={item.album_data.name}
+                                        authors={item.artists}
+                                    />
                                 )
                             }
                             )
@@ -120,9 +119,9 @@ export default function SearchPage(props) {
         }
     }
 
-    const fetchSongsList = async (searchText) => {
+    const fetchSongsList = async (searchText, library_id) => {
         try {
-            let path = 'http://192.168.1.66:12345/page/search/?search_str=' + searchText + '&search_page=' + searchType
+            let path = 'http://192.168.1.66:12345/page/search/?search_str=' + searchText + '&search_page=' + searchType + '&library_id=' + library_id
             const res = await fetch(
                 path,
                 {
@@ -142,9 +141,9 @@ export default function SearchPage(props) {
         }
     };
 
-    const fetchAlbumsList = async (searchText) => {
+    const fetchAlbumsList = async (searchText, library_id) => {
         try {
-            let path = 'http://192.168.1.66:12345/page/search/?search_str=' + searchText + '&search_page=' + searchType
+            let path = 'http://192.168.1.66:12345/page/search/?search_str=' + searchText + '&search_page=' + searchType + '&library_id=' + library_id
             const res = await fetch(
                 path,
                 {
@@ -164,13 +163,13 @@ export default function SearchPage(props) {
     };
 
     const getAlbumsList = async (text) => {
-        let list = await fetchAlbumsList(text)
+        let list = await fetchAlbumsList(text, 1)
         setAlbumsList(list)
         setShowList(true)
     }
 
     const getSongsList = async (text) => {
-        let list = await fetchSongsList(text)
+        let list = await fetchSongsList(text, 1)
         setSongsList(list)
         setShowList(true)
     }
@@ -322,8 +321,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         position: 'absolute',
         width: '100%',
-        height: '100%',
-        top: 100
+        height: '75%',
+        top: 100,
     },
     line: {
         borderBottomWidth: 1,
@@ -336,5 +335,13 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         width: '100%',
         display: 'flex',
+    },
+    scroll: {
+        width: '100%',
+        minHeight: '100%',
+        backgroundColor: 'black',
+        alignItems: 'center',
+        display: 'flex',
+        paddingBottom: 50
     }
 })

@@ -4,10 +4,21 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, ScrollView } from 'r
 import { useNavigation } from '@react-navigation/native';
 import { useState } from "react";
 import { useEffect } from "react";
+import { AlbumPageParams } from "../mobX/albumPage.js";
 
 export default function AlbumComponent(props) {
     const navigation = useNavigation();
-    const toAlbumPage = () => navigation.navigate('AlbumPage')
+    const toAlbumPage = () => {
+        AlbumPageParams.changeParams(props.id)
+
+        AlbumPageParams.setLibraryTouchTrigger()
+
+        navigation.navigate('LibraryPage')
+
+        setTimeout(() => {
+            navigation.navigate('LibraryPage', { screen: 'AlbumPage' })
+        }, 1);
+    }
 
     const [authors, setAuthors] = useState('')
     const [image, setImage] = useState(null)
@@ -22,6 +33,7 @@ export default function AlbumComponent(props) {
                         Accept: 'image/*',
                         'Content-Type': 'image/*',
                     },
+                    cache: 'no-cache'
                 }
             );
             const imageBlob = await res.blob();

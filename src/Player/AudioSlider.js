@@ -14,8 +14,6 @@ import Slider from '@react-native-community/slider'
 
 import * as FileSystem from 'expo-file-system'
 
-import { Asset } from 'expo-asset'
-
 import { Audio } from 'expo-av';
 
 import TextTicker from 'react-native-text-ticker'
@@ -41,7 +39,8 @@ export default observer(class AudioSlider extends PureComponent {
             height: new Animated.Value(40),
             songIsSaved: false,
             image: null,
-            sound: null
+            sound: null,
+            disableButtons: false
         }
 
         this.setSongIsSaved = this.setSongIsSaved.bind(this)
@@ -192,11 +191,55 @@ export default observer(class AudioSlider extends PureComponent {
     playNextSong = async () => {
         await this.soundObject.unloadAsync()
         PlayerQueue.increaseCurrentTrack()
+
+        if (PlayerQueue.isAlone) {
+            this.setState({ disableButtons: true })
+            this.pause()
+            this.setCurrentTime(0)
+
+            await this.soundObject.unloadAsync()
+
+            this.loadImage(this.props.id)
+
+            await this.loadSound(this.props.id)
+            await this.soundObject.loadAsync({ uri: this.state.sound });
+
+            const status = await this.soundObject.getStatusAsync();
+            this.setState({ duration: status["durationMillis"] });
+
+            this.mapAudioToCurrentTime()
+
+            this.setState({ disableButtons: false })
+
+            this.play()
+        }
     }
 
     playPrevSong = async () => {
         await this.soundObject.unloadAsync()
         PlayerQueue.decreaseCurrentTrack()
+
+        if (PlayerQueue.isAlone) {
+            this.setState({ disableButtons: true })
+            this.pause()
+            this.setCurrentTime(0)
+
+            await this.soundObject.unloadAsync()
+
+            this.loadImage(this.props.id)
+
+            await this.loadSound(this.props.id)
+            await this.soundObject.loadAsync({ uri: this.state.sound });
+
+            const status = await this.soundObject.getStatusAsync();
+            this.setState({ duration: status["durationMillis"] });
+
+            this.mapAudioToCurrentTime()
+
+            this.setState({ disableButtons: false })
+
+            this.play()
+        }
     }
 
     runSlider = async () => {
@@ -221,6 +264,7 @@ export default observer(class AudioSlider extends PureComponent {
     }
 
     async componentDidMount() {
+        this.setState({ disableButtons: true })
         await Audio.setIsEnabledAsync(true);
         this.soundObject = new Audio.Sound();
 
@@ -233,12 +277,13 @@ export default observer(class AudioSlider extends PureComponent {
         this.loadImage(this.props.id)
 
         setInterval(this.runSlider, 1000);
-
+        this.setState({ disableButtons: false })
         this.play()
     }
 
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
+            this.setState({ disableButtons: true })
             this.pause()
             this.setCurrentTime(0)
 
@@ -253,7 +298,7 @@ export default observer(class AudioSlider extends PureComponent {
             this.setState({ duration: status["durationMillis"] });
 
             this.mapAudioToCurrentTime()
-
+            this.setState({ disableButtons: false })
             this.play()
         }
     }
@@ -376,6 +421,7 @@ export default observer(class AudioSlider extends PureComponent {
                                         <AntDesign name="banckward" size={40} color="white" />
                                     </TouchableOpacity>
                                     <TouchableOpacity
+                                        disabled={this.state.disableButtons}
                                         style={styles.playBTN}
                                         onPress={this.onPressPlayPause}
                                     >

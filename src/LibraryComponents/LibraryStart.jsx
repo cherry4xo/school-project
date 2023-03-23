@@ -5,61 +5,6 @@ import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import Album from '../MusicComponents/AlbumComponent.jsx'
-
-const DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5aa-3ad53abb28ba',
-        title: 'First Item',
-        pictureDirection: require('../../assets/img/avatar.jpg')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd9dfh1aa97f63',
-        title: 'Second Item',
-        pictureDirection: require('../../assets/img/HomeBG.png')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-1asd45571e29d72',
-        title: 'Third Item',
-        pictureDirection: require('../../assets/img/downloadImage.png')
-    },
-    {
-        id: 'bd7acbea-c1b1-46c2-aedsf5-3ad53sdfabb28ba',
-        title: 'First Item',
-        pictureDirection: require('../../assets/img/avatar.jpg')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbsdfd91aa97f63',
-        title: 'Second Item',
-        pictureDirection: require('../../assets/img/HomeBG.png')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e2sdf9d72',
-        title: 'Third Item',
-        pictureDirection: require('../../assets/img/downloadImage.png')
-    },
-];
-
-function AlbumsList() {
-
-    return (
-        < View style={[styles.recentlyAddedAlbums, { justifyContent: 'center' }]}>
-            {
-                DATA.map((item) =>
-                    <Album key={item.id} imagePath={item.pictureDirection} albumName={item.title} />
-                )
-            }
-            {
-                (DATA.length % 2 != 0) ?
-                    <View style={{ width: 140, marginHorizontal: 20 }} />
-                    :
-                    null
-            }
-        </View >
-
-    );
-}
-
 export default function LibraryStart({ navigation }) {
 
     const toUserSongs = () => navigation.navigate('Songs')
@@ -97,12 +42,6 @@ export default function LibraryStart({ navigation }) {
                     </View>
                 </TouchableHighlight>
                 <View style={styles.line} />
-
-                <Text style={[styles.text, { fontSize: 28, marginVertical: 20, fontFamily: 'Nunito-Medium' }]}>
-                    Recently Added:
-                </Text>
-
-                <AlbumsList />
             </ScrollView >
         </View>
 

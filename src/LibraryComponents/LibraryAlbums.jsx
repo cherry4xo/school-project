@@ -3,60 +3,79 @@ import { StyleSheet, Text, FlatList, View, TouchableHighlight, ScrollView } from
 
 import Album from '../MusicComponents/AlbumComponent.jsx'
 
-const DATA = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5aa-3ad53abb28ba',
-        title: 'First Item',
-        pictureDirection: require('../../assets/img/avatar.jpg')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbd9dfh1aa97f63',
-        title: 'Second Item',
-        pictureDirection: require('../../assets/img/HomeBG.png')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-1asd45571e29d72',
-        title: 'Third Item',
-        pictureDirection: require('../../assets/img/downloadImage.png')
-    },
-    {
-        id: 'bd7acbea-c1b1-46c2-aedsf5-3ad53sdfabb28ba',
-        title: 'First Item',
-        pictureDirection: require('../../assets/img/avatar.jpg')
-    },
-    {
-        id: '3ac68afc-c605-48d3-a4f8-fbsdfd91aa97f63',
-        title: 'Second Item',
-        pictureDirection: require('../../assets/img/HomeBG.png')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e2sdf9d72',
-        title: 'Third Item',
-        pictureDirection: require('../../assets/img/downloadImage.png')
-    },
-];
-
-function AlbumsList() {
-
-    return (
-        < View style={[styles.recentlyAddedAlbums, { justifyContent: 'center' }]}>
-            {
-                DATA.map((item) =>
-                    <Album key={item.id} imagePath={item.pictureDirection} albumName={item.title} />
-                )
-            }
-            {
-                (DATA.length % 2 != 0) ?
-                    <View style={{ width: 140, marginHorizontal: 20 }} />
-                    :
-                    null
-            }
-        </View >
-
-    );
-}
+import { useState, useEffect } from 'react';
 
 export default function LibraryAlbums() {
+
+    function AlbumsList() {
+        if (albumsList.length > 0) {
+            return (
+                < View style={[styles.Albums, { justifyContent: 'center' }]}>
+                    {
+                        albumsList.map((item) => {
+                            return (
+                                <Album
+                                    key={item.album_data.id}
+                                    id={item.album_data.id}
+                                    albumName={item.album_data.name}
+                                    authors={item.artists}
+                                />
+                            )
+                        }
+                        )
+                    }
+                    {
+                        (albumsList.length % 2 != 0) ?
+                            <View style={{ width: 140, marginHorizontal: 20 }} />
+                            :
+                            null
+                    }
+                </View >
+            );
+        } else {
+            return (
+                <View></View>
+            )
+        }
+
+    }
+
+    const fetchAlbumsList = async (id) => {
+        try {
+            let path = 'http://192.168.1.66:12345/library/?library_id=' + id
+            const res = await fetch(
+                path,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const callback = await res.json()
+
+            return callback
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const getAlbumsList = async (id) => {
+        let list = await fetchAlbumsList(id)
+        setAlbumsList(list.albums.reverse())
+    }
+
+    const [albumsList, setAlbumsList] = useState([])
+
+    useEffect(() => {
+        const get = async () => {
+            await getAlbumsList(1)
+        }
+
+        get()
+    }, [])
 
     return (
         <View style={{ backgroundColor: 'black' }}>
@@ -96,11 +115,11 @@ const styles = StyleSheet.create({
         borderBottomColor: '#5A5A5A',
         width: '80%',
     },
-    recentlyAddedAlbums: {
+    Albums: {
         flexDirection: 'row',
         gap: '1rem',
         flexWrap: "wrap",
         width: '100%',
         display: 'flex',
-    }
+    },
 })

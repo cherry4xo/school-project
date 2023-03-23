@@ -1,13 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
+import { AlbumPageParams } from "./mobX/albumPage";
+
 export default function NavBar() {
+
+    useEffect(() => {
+        if (AlbumPageParams.getTrigger) {
+            setHomeImg('ios-home-outline')
+            setSearchImg('search-outline')
+            setRecImg('favorite-outline')
+            setSoundSearchImg('record-circle-outline')
+            setLibraryImg('library')
+
+            setHomeColor('white')
+            setSearchColor('white')
+            setRecColor('white')
+            setSoundSearchColor('white')
+            setLibraryColor('#FF0054')
+
+            AlbumPageParams.setLibraryTouchTrigger()
+        }
+    })
 
     const [homeImg, setHomeImg] = useState('home-sharp')
     const [searchImg, setSearchImg] = useState('search-outline')

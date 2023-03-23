@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, useRoute } from '@react-navigation/native-stack';
 
 //components
 import LibraryStart from '../LibraryComponents/LibraryStart';
@@ -10,6 +10,7 @@ import LibraryAlbums from '../LibraryComponents/LibraryAlbums';
 import LibraryPlaylists from '../LibraryComponents/LibraryPlaylists';
 
 import AlbumPage from '../MusicComponents/AlbumPage'
+import { useEffect } from 'react';
 
 const LibraryStack = createNativeStackNavigator();
 
