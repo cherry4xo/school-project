@@ -23,6 +23,7 @@ export default function LibrarySongs(props) {
             }
 
             post.push({
+                "added": track.added,
                 "artists": [
                     artistsString
                 ],

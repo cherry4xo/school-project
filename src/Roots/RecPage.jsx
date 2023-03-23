@@ -19,6 +19,7 @@ export default function RecPage({ navigation }) {
             }
 
             post.push({
+                "added": track.added,
                 "artists": [
                     artistsString
                 ],
@@ -92,7 +93,6 @@ export default function RecPage({ navigation }) {
         } else {
             return (
                 <View style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}>
-                    <Text style={styles.text}>No such song in database</Text>
                 </View>
             )
         }

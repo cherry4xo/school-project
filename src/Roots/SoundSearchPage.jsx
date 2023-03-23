@@ -13,8 +13,9 @@ export default function SoundSearchPage({ navigation }) {
     async function search() {
         setLoading(true)
         setTimeout(() => {
+
             setLoading(false)
-        }, 3000);
+        }, 15000);
     }
 
     return (

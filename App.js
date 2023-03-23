@@ -32,7 +32,7 @@ setAudioModeAsync({
 
 export default observer(function App() {
 
-  // LogBox.ignoreAllLogs() // ignore warnings for presentation video
+  LogBox.ignoreAllLogs() // ignore warnings for presentation video
 
   useEffect(() => {
   })

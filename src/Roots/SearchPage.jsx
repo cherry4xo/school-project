@@ -19,6 +19,7 @@ export default function SearchPage(props) {
             }
 
             post.push({
+                "added": track.added,
                 "artists": [
                     artistsString
                 ],

@@ -257,13 +257,14 @@ export default observer(class AudioSlider extends PureComponent {
     }
 
     //Saving a song to the user lybrary
-    saveSong() {
+    changeTrackStatus() {
         if (this.songIsSaved) {
 
         }
     }
 
     async componentDidMount() {
+        this.setState({ songIsSaved: PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].added })
         this.setState({ disableButtons: true })
         await Audio.setIsEnabledAsync(true);
         this.soundObject = new Audio.Sound();
@@ -283,6 +284,8 @@ export default observer(class AudioSlider extends PureComponent {
 
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
+            this.setState({ songIsSaved: PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].added })
+            console.log(PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack])
             this.setState({ disableButtons: true })
             this.pause()
             this.setCurrentTime(0)
@@ -373,8 +376,23 @@ export default observer(class AudioSlider extends PureComponent {
                                             <Text numberOfLines={1} style={[styles.text, { opacity: 0.8, fontSize: 16 }]}>{this.props.trackAuthor}</Text>
                                         </View>
                                     }
-                                    <TouchableOpacity style={{ height: '100%' }} onPress={() => {
+                                    <TouchableOpacity style={{ height: '100%' }} onPress={async () => {
                                         this.setSongIsSaved(!this.state.songIsSaved)
+
+                                        try {
+                                            let path = 'http://192.168.1.66:12345/library/change_track_status/?library_id=' + 1 + '&track_id=' + PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id
+                                            const callback = await fetch(
+                                                path,
+                                                {
+                                                    method: 'POST',
+                                                }
+                                            );
+
+                                            return callback
+
+                                        } catch (error) {
+                                            console.error(error);
+                                        }
                                     }}>
                                         {
                                             this.state.songIsSaved
@@ -504,8 +522,23 @@ export default observer(class AudioSlider extends PureComponent {
 
                                             </View>
                                         </View>
-                                        <TouchableOpacity style={{ height: '100%' }} onPress={() => {
+                                        <TouchableOpacity style={{ height: '100%' }} onPress={async () => {
                                             this.setSongIsSaved(!this.state.songIsSaved)
+
+                                            try {
+                                                let path = 'http://192.168.1.66:12345/library/change_track_status/?library_id=' + 1 + '&track_id=' + PlayerQueue.getQueue.tracks[PlayerQueue.getCurrentTrack].id
+                                                const callback = await fetch(
+                                                    path,
+                                                    {
+                                                        method: 'POST',
+                                                    }
+                                                );
+
+                                                return callback
+
+                                            } catch (error) {
+                                                console.error(error);
+                                            }
                                         }}>
                                             {
                                                 this.state.songIsSaved

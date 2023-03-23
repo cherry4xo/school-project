@@ -27,6 +27,7 @@ export default function AlbumPage({ navigation }) {
             }
 
             post.push({
+                "added": track.added,
                 "artists": [
                     artistsString
                 ],
