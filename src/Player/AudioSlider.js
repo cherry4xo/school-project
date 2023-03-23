@@ -320,7 +320,6 @@ export default observer(class AudioSlider extends PureComponent {
                     style={{
                         height: windowHeight,
                         resizeMode: 'cover',
-                        // top: -windowHeight + 35,
                         top: this.state.height,
                         width: windowWidth,
                         position: 'absolute',
